@@ -1,0 +1,9 @@
+title: DofStart
+---
+    <<hagCallNode name="DofFunctionInitOnStart">>
+
+    [[New Game|DofGameNew]]
+    [[Load Game|DofGameLoad]]
+
+===
+

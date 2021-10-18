@@ -1,0 +1,44 @@
+title: DofGameDungeonCorridor
+---
+    // show room map
+    <<hagHistoryClean>>
+    <<hagCallNode name="DofFunctionAddMapCorridorTemplate">>
+    <<hagHighlightBlocksShow columns=4 center=true>>
+    <<set $dofResult to result("")>>
+
+    // process result
+    <<if $dofResult is "RightDoor">> // forward
+        // discover new orientation
+        <<if $dofPlayer.dofNextOrientation is "YPositive">>
+            <<set $dofNextY to $dofY + 1>>
+        <<elseif $dofPlayer.dofNextOrientation is "YNegative">>
+            <<set $dofNextY to $dofY - 1>>
+        <<elseif $dofPlayer.dofNextOrientation is "XPositive">>
+            <<set $dofNextX to $dofX + 1>>
+        <<elseif $dofPlayer.dofNextOrientation is "XNegative">>
+            <<set $dofNextX to $dofX - 1>>
+        <<else>>
+            You seems to stuck here. This is internal program failure. Please, report it to the support team and provide a save file.
+            // TODO [[Save environment for support team|Game.Save]]
+            // TODO Recover option
+        <<endif>>
+
+        <<set $dofNextRoom to "Room x{$dofX} y{$dofY}">>
+
+        // check if room was generated, if not - create fill room
+        <<if $dofNextRoom.$dofgenerated>>
+        <<else>>
+            // TODO generate next room internals
+            <<set $dofRoom.$dofgenerated to true>>
+        <<endif>>
+
+    <<elseif $dofResult is "LeftDoor">> // back
+    <<endif>>
+
+    // enter room
+    <<hagCallNode name="DofGameDungeonRoom">>
+
+    // TODO check for traps encounter vs Perception or Listen stat
+    // TODO check for random item encounter vs Perception or Listen stat
+    // TODO apply Listen stat to detect monsters in the next room (vs monster Sneak stat)
+===

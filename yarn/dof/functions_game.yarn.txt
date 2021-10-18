@@ -1,0 +1,253 @@
+// Add empty block
+title: DofFunctionAddEmptyBlock
+---
+    // TODO type=gap
+    <<hagHighlightBlockSet type=image>>
+===
+
+// Add player image
+title: DofFunctionAddPlayerImage
+---
+    // TODO look depends on equipment
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageCommonPlayer}">>
+===
+
+/**
+ * @brief Add npc stats
+ * @param DofFunctionAddNpcStats_actor Actor name with stats
+ */
+title: DofFunctionAddNpcStats
+---
+    // add player stats
+    <<hagHighlightBlockSet type=value>>
+    <<hagHighlightBlockNoteAdd text="{$dofTranslateConstitution}"   value=$DofFunctionAddNpcStats_actor.$dofStatConstitution  path="{$dofImageConstitution}">>
+    <<hagHighlightBlockNoteAdd text="{$dofTranslateListen}"         value=$DofFunctionAddNpcStats_actor.$dofStatListen        path="{$dofImageListen}">>
+    <<hagHighlightBlockNoteAdd text="{$dofTranslatePerception}"     value=$DofFunctionAddNpcStats_actor.$dofStatPerception    path="{$dofImagePerception}">>
+    <<hagHighlightBlockNoteAdd text="{$dofTranslateSneak}"          value=$DofFunctionAddNpcStats_actor.$dofStatSneak         path="{$dofImageSneak}">>
+    <<hagHighlightBlockNoteAdd text="{$dofTranslateSpeed}"          value=$DofFunctionAddNpcStats_actor.$dofStatSpeed         path="{$dofImageSpeed}">>
+    <<hagHighlightBlockNoteAdd text="{$dofTranslateAttack}"         value=$DofFunctionAddNpcStats_actor.$dofStatAttack        path="{$dofImageAttack}">>
+    <<hagHighlightBlockNoteAdd text="{$dofTranslateDefense}"        value=$DofFunctionAddNpcStats_actor.$dofStatDefense       path="{$dofImageDefense}">>
+
+===
+
+// Add current players stats
+title: DofFunctionAddPlayerStats
+---
+    <<set $DofFunctionAddNpcStats_actor to "dofPlayer">>
+    <<hagCallNode name="DofFunctionAddNpcStats">>
+===
+
+title: DofFunctionAddPlayerStatsWithPoints
+---
+    <<hagCallNode name="DofFunctionAddPlayerImage">>
+    <<hagCallNode name="DofFunctionAddPlayerStats">>
+    <<hagCallNode name="DofFunctionAddEmptyBlock">>
+
+    <<hagCallNode name="DofFunctionAddEmptyBlock">>
+    <<hagCallNode name="DofFunctionAddNewPlayerStatPoints">>
+    <<hagCallNode name="DofFunctionAddEmptyBlock">>
+===
+
+// Add current players stats without description (short form)
+title: DofFunctionAddPlayerStatsShort
+---
+    // add player stats
+    <<hagHighlightBlockSet type=value>>
+    <<hagHighlightBlockNoteAdd value=$dofPlayer.dofStatConstitution  path="{$dofImageConstitution}">>
+    <<hagHighlightBlockNoteAdd value=$dofPlayer.dofStatListen        path="{$dofImageListen}">>
+    <<hagHighlightBlockNoteAdd value=$dofPlayer.dofStatPerception    path="{$dofImagePerception}">>
+    <<hagHighlightBlockNoteAdd value=$dofPlayer.dofStatSneak         path="{$dofImageSneak}">>
+    <<hagHighlightBlockNoteAdd value=$dofPlayer.dofStatSpeed         path="{$dofImageSpeed}">>
+    <<hagHighlightBlockNoteAdd value=$dofPlayer.dofStatAttack        path="{$dofImageAttack}">>
+    <<hagHighlightBlockNoteAdd value=$dofPlayer.dofStatDefense       path="{$dofImageDefense}">>
+
+===
+
+// Add left stat points to distribute
+title: DofFunctionAddNewPlayerStatPoints
+---
+    <<if $dofPlayer.dofStatPointsLeft > 0>>
+        <<set $dofValueColor to $dofColorValue>>
+    <<elseif $dofPlayer.dofStatPointsLeft == 0>>
+        <<set $dofValueColor to $dofColorOKValue>>
+    <<elseif $dofPlayer.dofStatPointsLeft < 0>>
+        <<set $dofValueColor to $dofColorNOKValue>>
+    <<endif>>
+
+    <<hagHighlightBlockSet type=info>>
+    <<hagHighlightBlockNoteAdd text="{$dofValueColor}{$dofPlayer.dofStatPointsLeft}{$dofColorEnd} points left to distribute">>
+===
+
+// Add current players stats level up menu group
+title: DofFunctionAddPlayerStatsLevelUp
+---
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageStatsLevelUp}">>
+===
+
+// Add current players fobia level up menu group
+title: DofFunctionAddPlayerFobiaLevelUp
+---
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageFobiaLevelUp}">>
+===
+
+// Add current players each stat as levelup menu group
+title: DofFunctionAddPlayerStatsEachLevelUp
+---
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageConstitution}" onclick="Constitution">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageListen}" onclick="Listen">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImagePerception}" onclick="Perception">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageSneak}" onclick="Sneak">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageSpeed}" onclick="Speed">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageAttack}" onclick="Attack">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageMenuArrowLeft}" onclick="Back">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageDefense}" onclick="Defense">>
+
+===
+
+
+// Add inventory title
+title: DofFunctionAddPlayerInventoryTitle
+---
+    // add inventory title
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd text="{$dofTranslateInventory}">>
+===
+
+// Add inventory items
+title: DofFunctionAddPlayerInventory
+---
+    <<set $dofIndex            to 0>>
+    <<while $dofIndex is not $dofPlayer.dofInventorySize>>
+        <<set $dofItemSlot to "{$dofNameInventorySlot}{$dofIndex}">>
+
+        <<hagHighlightBlockSet type=image>>
+        <<if $dofItemSlot.$dofUsed>>
+            <<hagHighlightBlockNoteAdd path=$dofItemSlot.$dofImage text="{$dofItemSlot.$dofName}">>
+        <<else>>
+            <<hagHighlightBlockNoteAdd path="{$dofImageInventoryEmptySlot}">>
+        <<endif>>
+
+        <<set $dofIndex to $dofIndex + 1>>
+    <<endwhile>>
+===
+
+// Add equipment title
+title: DofFunctionAddPlayerEquipmentTitle
+---
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd text="{$dofTranslateEquipment}">>
+===
+
+// Add equipment items
+title: DofFunctionAddPlayerEquipment
+---
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageEquipmentNecklaceEmptySlot}">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageEquipmentHelmEmptySlot}">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageEquipmentRingEmptySlot}">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageEquipmentRightArmEmptySlot}">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageEquipmentBodyEmptySlot}">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageEquipmentLeftArmEmptySlot}">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageEquipmentQuick1EmptySlot}">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageEquipmentBootsEmptySlot}">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageEquipmentQuick2EmptySlot}">>
+===
+
+// Show room map template
+title: DofFunctionAddMapRoomTemplate
+---
+    // upper row
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageLeftTopGround}"      style="room" onclick="Player">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageTopGround}"          style="room">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageTopDoor}"            style="room" onclick="TopDoor" >>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageRightTopGround}"     style="room">>
+
+
+    // mid row
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageLeftDoor}"           style="room" onclick="LeftDoor">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageMiddleGround}"        style="room">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageMiddleGround}"        style="room" >>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageRightDoor}"          style="room" onclick="RightDoor">>
+
+
+    // bottom row
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageLeftBottomGround}"   style="room">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageBottomDoor}"         style="room" onclick="BottomDoor">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageBottomGround}"       style="room">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageRightBottomGround}"  style="room">>
+
+===
+
+// Show room map template
+title: DofFunctionAddMapCorridorTemplate
+---
+    // mid row
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageLeftCorridorDoor}"           style="room" onclick="LeftDoor">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageMiddleCorridorCharGround}"   style="room" onclick="Player">>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageMiddleCorridorGround}"       style="room" >>
+
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd path="{$dofImageRightCorridorDoor}"          style="room" onclick="RightDoor">>
+===
+

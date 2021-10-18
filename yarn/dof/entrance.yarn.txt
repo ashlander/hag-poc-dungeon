@@ -1,0 +1,16 @@
+title: DofGameDungeonEntrance
+---
+    <<set $dofX                             to 0>>
+    <<set $dofY                             to 0>>
+    <<set $dofNextX                         to 0>>
+    <<set $dofNextY                         to 0>>
+
+    <<set $dofPlayer.dofOrientation         to "YPositive">>
+    <<set $dofPlayer.dofNextOrientation     to "YPositive">>
+
+    //You see traders here
+
+    // [[Talk to trader|Game.Dungeon.Entrance.Trader]]
+    [[Go inside dungeon|DofGameDungeonRoom]]
+    [[Save Game|DofGameSave]]
+===

@@ -1,0 +1,13 @@
+title: DofGamePlayerInventory
+---
+    // show inventory title
+    <<hagCallNode name="DofFunctionAddPlayerInventoryTitle">>
+    <<hagHighlightBlocksShow>>
+
+    // show inventory items
+    <<hagCallNode name="DofFunctionAddPlayerInventory">>
+    <<hagHighlightBlocksShow>>
+
+    [[Back|DofGameDungeonRoom]]
+
+===

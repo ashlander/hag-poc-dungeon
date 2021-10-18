@@ -1,0 +1,101 @@
+title: DofGameDungeonRoom
+---
+    <<set $dofX to $dofNextX>>
+    <<set $dofY to $dofNextY>>
+    <<set $dofPlayer.dofOrientation to $dofPlayer.dofNextOrientation>>
+    <<set $dofRoom to "Room x{$dofX} y{$dofY}">>
+
+    //DEBUG: You are in the room {$dofRoom}
+
+//    // check if visited room, output something funny
+//    <<if $dofRoom.$dofVisited>>
+//        You have a strong feeling that you has been here already.
+//    <<else>>
+//        // TODO random room description
+//    <<endif>>
+//
+//    <<if $dofX is 0 and $dofY is 0>>
+//        You are near entrance spot. You have {$dofPlayer.dofGold} coins in your pocket.
+//        [[Let me out!|DofGameDungeonEntrance]] // TODO price to pay
+//    <<endif>>
+
+    <<set $dofRoom.$dofVisited to true>>
+
+    // show room map
+    <<hagHistoryClean>>
+    <<hagCallNode name="DofFunctionAddMapRoomTemplate">>
+    <<hagHighlightBlocksShow columns=4 center=true>>
+    <<set $dofResult to result("")>>
+
+    // process result
+    <<if $dofResult is "RightDoor">> // forward
+        // orientation preserved
+        <<hagCallNode name="DofGameDungeonCorridor">>
+    <<elseif $dofResult is "TopDoor">> // left
+        <<if $dofPlayer.dofOrientation is "YPositive">>
+            <<set $dofPlayer.dofNextOrientation to "XNegative">>
+        <<elseif $dofPlayer.dofOrientation is "XNegative">>
+            <<set $dofPlayer.dofNextOrientation to "YNegative">>
+        <<elseif $dofPlayer.dofOrientation is "YNegative">>
+            <<set $dofPlayer.dofNextOrientation to "XPositive">>
+        <<elseif $dofPlayer.dofOrientation is "XPositive">>
+            <<set $dofPlayer.dofNextOrientation to "YPositive">>
+        <<else>>
+            You seems to stuck here. This is internal program failure. Please, report it to the support team and provide a save file.
+            // TODO [[Save environment for support team|Game.Save]]
+            // TODO Recover option
+        <<endif>>
+        <<hagCallNode name="DofGameDungeonCorridor">>
+    <<elseif $dofResult is "BottomDoor">> // right
+        <<if $dofPlayer.dofOrientation is "YPositive">>
+            <<set $dofPlayer.dofNextOrientation to "XPositive">>
+        <<elseif $dofPlayer.dofOrientation is "XPositive">>
+            <<set $dofPlayer.dofNextOrientation to "YNegative">>
+        <<elseif $dofPlayer.dofOrientation is "YNegative">>
+            <<set $dofPlayer.dofNextOrientation to "XNegative">>
+        <<elseif $dofPlayer.dofOrientation is "XNegative">>
+            <<set $dofPlayer.dofNextOrientation to "YPositive">>
+        <<else>>
+            You seems to stuck here. This is internal program failure. Please, report it to the support team and provide a save file.
+            // TODO [[Save environment for support team|Game.Save]]
+            // TODO Recover option
+        <<endif>>
+        <<hagCallNode name="DofGameDungeonCorridor">>
+    <<elseif $dofResult is "LeftDoor">> // back
+        <<if $dofPlayer.dofOrientation is "YPositive">>
+            <<set $dofPlayer.dofNextOrientation to "YNegative">>
+        <<elseif $dofPlayer.dofOrientation is "YNegative">>
+            <<set $dofPlayer.dofNextOrientation to "YPositive">>
+        <<elseif $dofPlayer.dofOrientation is "XPositive">>
+            <<set $dofPlayer.dofNextOrientation to "XNegative">>
+        <<elseif $dofPlayer.dofOrientation is "XNegative">>
+            <<set $dofPlayer.dofNextOrientation to "XPositive">>
+        <<else>>
+            You seems to stuck here. This is internal program failure. Please, report it to the support team and provide a save file.
+            // TODO [[Save environment for support team|Game.Save]]
+            // TODO Recover option
+        <<endif>>
+        <<hagCallNode name="DofGameDungeonCorridor">>
+    <<elseif $dofResult is "Player">> // back
+        <<hagHistoryClean>>
+
+        // show equipment title
+        <<hagCallNode name="DofFunctionAddPlayerEquipmentTitle">>
+        <<hagHighlightBlocksShow>>
+
+        // show equipment items
+        <<hagCallNode name="DofFunctionAddPlayerEquipment">>
+        <<hagHighlightBlocksShow>>
+
+        // show inventory title
+        <<hagCallNode name="DofFunctionAddPlayerInventoryTitle">>
+        <<hagHighlightBlocksShow>>
+
+        // show inventory items
+        <<hagCallNode name="DofFunctionAddPlayerInventory">>
+        <<hagHighlightBlocksShow>>
+
+        [[Back|DofGameDungeonRoom]]
+    <<endif>>
+
+===

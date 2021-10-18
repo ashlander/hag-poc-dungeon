@@ -1,0 +1,207 @@
+// Initialize styles
+title: DofFunctionInitStyles
+---
+    <<set $dofColorValue                                to "[color=#f3cd1d]">>
+    <<set $dofColorOKValue                              to "[color=#447506]">>
+    <<set $dofColorNOKValue                             to "[color=#a7360d]">>
+    <<set $dofColorEnd                                  to "[/color]">>
+===
+
+// some often used menus names, which will be translated during initialization
+title: DofFunctionInitTranslations
+---
+    // stats
+    <<set $dofTranslateConstitution                     to "Constitution">> #line:
+    <<set $dofTranslateListen                           to "Listen">> #line:
+    <<set $dofTranslatePerception                       to "Perception">> #line:
+    <<set $dofTranslateSneak                            to "Sneak">> #line:
+    <<set $dofTranslateSpeed                            to "Speed">> #line:
+    <<set $dofTranslateAttack                           to "Attack">> #line:
+    <<set $dofTranslateDefense                          to "Defense">> #line:
+
+    <<set $dofTranslateConstitutionDescription          to "Constitution Description">> #line:
+    <<set $dofTranslateListenDescription                to "Listen Description">> #line:
+    <<set $dofTranslatePerceptionDescription            to "Perception Description">> #line:
+    <<set $dofTranslateSneakDescription                 to "Sneak Description">> #line:
+    <<set $dofTranslateSpeedDescription                 to "Speed Description">> #line:
+    <<set $dofTranslateAttackDescription                to "Attack Description">> #line:
+    <<set $dofTranslateDefenseDescription               to "Defense Description">> #line:
+
+    // menus
+    <<set $dofTranslateInventory                        to "Inventory">> #line:
+    <<set $dofTranslateEquipment                        to "Equipment">> #line:
+===
+
+// variables with ingame variable names
+title: DofFunctionInitSlotNames
+---
+    <<set $dofNameInventorySlot                         to "DofEnvSlot">>
+===
+
+
+title: DofFunctionInitImagePaths
+---
+    // stats
+    <<set $dofImageConstitution                         to "/img/game-icons/hearts.png">>
+    <<set $dofImageListen                               to "/img/game-icons/human-ear.png">>
+    <<set $dofImagePerception                           to "/img/game-icons/eyeball.png">>
+    <<set $dofImageSneak                                to "/img/game-icons/hooded-figure.png">>
+    <<set $dofImageSpeed                                to "/img/game-icons/wingfoot.png">>
+    <<set $dofImageAttack                               to "/img/game-icons/biceps.png">>
+    <<set $dofImageDefense                              to "/img/game-icons/bordered-shield.png">>
+
+    // inline stats
+    <<set $dofImageInlineConstitution                   to "[img]{$dofImageConstitution}[/img]">>
+    <<set $dofImageInlineListen                         to "[img]{$dofImageListen}[/img]">>
+    <<set $dofImageInlinePerception                     to "[img]{$dofImagePerception}[/img]">>
+    <<set $dofImageInlineSneak                          to "[img]{$dofImageSneak}[/img]">>
+    <<set $dofImageInlineSpeed                          to "[img]{$dofImageSpeed}[/img]">>
+    <<set $dofImageInlineAttack                         to "[img]{$dofImageAttack}[/img]">>
+    <<set $dofImageInlineDefense                        to "[img]{$dofImageDefense}[/img]">>
+
+    // levelup
+    <<set $dofImageStatsLevelUp                         to "{$dofImageConstitution}">> // TODO other stats image
+    <<set $dofImageFobiaLevelUp                         to "{$dofImagePerception}">> // TODO other fobia image
+
+    // inventory
+    <<set $dofImageInventoryEmptySlot                   to "img/game-icons/swap-bag.slot.png">>
+
+    // equipment
+    <<set $dofImageEquipmentNecklaceEmptySlot           to "img/game-icons/gem-pendant.slot.png">> // necklace
+    <<set $dofImageEquipmentHelmEmptySlot               to "img/game-icons/spartan-helmet.slot.png">> // helm
+    <<set $dofImageEquipmentRingEmptySlot               to "img/game-icons/power-ring.slot.png">> // ring
+    <<set $dofImageEquipmentRightArmEmptySlot           to "img/game-icons/gloves.slot.png">> // right arm
+    <<set $dofImageEquipmentBodyEmptySlot               to "img/game-icons/lamellar.slot.png">> // body
+    <<set $dofImageEquipmentLeftArmEmptySlot            to "img/game-icons/gloves.slot.png">> // left arm
+    <<set $dofImageEquipmentQuick1EmptySlot             to "img/game-icons/knapsack.slot.png">> // quick slot 1
+    <<set $dofImageEquipmentBootsEmptySlot              to "img/game-icons/boots.slot.png">> // boots
+    <<set $dofImageEquipmentQuick2EmptySlot             to "img/game-icons/knapsack.slot.png">> //  quick slot 1
+
+    // map empty ground
+    <<set $dofImageLeftTopGround                        to "/img/game-ground/LTGround.png">>
+    <<set $dofImageTopGround                            to "/img/game-ground/TopGround.png">>
+    <<set $dofImageRightTopGround                       to "/img/game-ground/RTGround.png">>
+
+    <<set $dofImageLeftMidGround                        to "/img/game-ground/LMGround.png">>
+    <<set $dofImageMiddleGround                         to "/img/game-ground/MidGround.png">>
+    <<set $dofImageRightMidGround                       to "/img/game-ground/RMGround.png">>
+
+    <<set $dofImageLeftBottomGround                     to "/img/game-ground/LBGround.png">>
+    <<set $dofImageBottomGround                         to "/img/game-ground/BottomGround.png">>
+    <<set $dofImageRightBottomGround                    to "/img/game-ground/RBGround.png">>
+
+    <<set $dofImageMiddleCorridorGround                 to "/img/game-ground/MidCorridorGround.png">>
+    <<set $dofImageMiddleCorridorCharGround             to "/img/game-ground/MidCorridorCharGround.png">>
+
+    // map doors
+    <<set $dofImageTopDoor                              to "/img/game-ground/TopDoor.png">>
+    <<set $dofImageRightDoor                            to "/img/game-ground/RightDoor.png">>
+    <<set $dofImageLeftDoor                             to "/img/game-ground/LeftDoor.png">>
+    <<set $dofImageBottomDoor                           to "/img/game-ground/BottomDoor.png">>
+
+    <<set $dofImageRightCorridorDoor                    to "/img/game-ground/RightCorridorDoor.png">>
+    <<set $dofImageLeftCorridorDoor                     to "/img/game-ground/LeftCorridorDoor.png">>
+
+    // map other
+    <<set $dofImageMiddleChest                          to "/img/game-ground/MidChest.png">>
+    <<set $dofImageMiddleEnemy                          to "/img/game-ground/MidEnemy4.png">>
+
+    // player
+    <<set $dofImageCommonPlayer                         to "/img/game-player/Char1.png">>
+
+    // menu
+    <<set $dofImageMenuArrowUp                          to "/img/game-menu/Arrow-up.png">>
+    <<set $dofImageMenuArrowDown                        to "/img/game-menu/Arrow-down.png">>
+    <<set $dofImageMenuArrowRight                       to "/img/game-menu/Arrow-right.png">>
+    <<set $dofImageMenuArrowLeft                        to "/img/game-menu/Arrow-left.png">>
+
+===
+
+
+// Initialize player stats
+title: DofFunctionInitNewPlayerStats
+---
+    // stat limits
+    <<set $dofPlayer.dofStatMin                         to 1>> // max 5
+    <<set $dofPlayer.dofStatMax                         to 5>> // max 5
+    <<set $dofPlayer.dofStatPointsLeft                  to 11>> // max (35/2)+1 -7 of initial = 11
+
+    // TODO tmp initialize player stats
+    <<set $dofPlayer.dofStatConstitution                to 0>>
+    <<set $dofPlayer.dofStatListen                      to 0>>
+    <<set $dofPlayer.dofStatPerception                  to 0>>
+    <<set $dofPlayer.dofStatSneak                       to 0>>
+    <<set $dofPlayer.dofStatSpeed                       to 0>>
+    <<set $dofPlayer.dofStatAttack                      to 0>>
+    <<set $dofPlayer.dofStatDefense                     to 0>>
+
+    // initialize player stats
+    <<set $dofPlayer.dofStatConstitution                to $dofPlayer.dofStatMin>>
+    <<set $dofPlayer.dofStatListen                      to $dofPlayer.dofStatMin>>
+    <<set $dofPlayer.dofStatPerception                  to $dofPlayer.dofStatMin>>
+    <<set $dofPlayer.dofStatSneak                       to $dofPlayer.dofStatMin>>
+    <<set $dofPlayer.dofStatSpeed                       to $dofPlayer.dofStatMin>>
+    <<set $dofPlayer.dofStatAttack                      to $dofPlayer.dofStatMin>>
+    <<set $dofPlayer.dofStatDefense                     to $dofPlayer.dofStatMin>>
+
+    // initialize inventory size
+    <<set $dofPlayer.dofInventorySize to 5>>
+
+===
+
+// New game initialization
+title: DofFunctionGameInit
+---
+
+    //  TODO choose gender with blocks
+    // -> He
+    //     <<set $dofPlayer.dofGender        to "he">>
+    // -> She
+    //     <<set $dofPlayer.dofGender        to "she">>
+    // -> They
+    //     <<set $dofPlayer.dofGender        to "they">>
+
+
+    // initialize players stats
+    <<hagCallNode name="DofFunctionInitNewPlayerStats">>
+
+    // initialize gold
+    <<set $dofPlayer.dofGold to 0>>
+
+    // initialize inventory
+    <<set $dofIndex to 0>>
+    <<while $dofIndex is not $dofPlayer.dofInventorySize>>
+        <<set $dofSlot to "{$dofNameInventorySlot}{$dofIndex}">>
+
+        <<set $dofSlot.$dofUsed         to false>>
+        <<set $dofSlot.$dofName         to "">>
+        <<set $dofSlot.$dofImage        to "">>
+        <<set $dofSlot.$dofCanEquip     to false>>
+        <<set $dofSlot.$dofCanConsume   to false>>
+        <<set $dofSlot.$dofCanDrop      to false>>
+
+        <<set $dofIndex to $dofIndex + 1>>
+    <<endwhile>>
+
+    // initialize map variables
+    <<set $dofX                         to 0>>
+    <<set $dofY                         to 0>>
+    <<set $dofNextX                     to 0>>
+    <<set $dofNextY                     to 0>>
+
+===
+
+// on start initialization
+title: DofFunctionInitOnStart
+---
+
+    <<hagCallNode name="DofFunctionInitStyles">>
+    <<hagCallNode name="DofFunctionInitImagePaths">>
+    <<hagCallNode name="DofFunctionInitSlotNames">>
+
+    // TODO language detection
+
+    <<hagCallNode name="DofFunctionInitTranslations">>
+
+===
+

@@ -1,0 +1,309 @@
+title: DofGameNew
+---
+    [[Create New Character|DofGameNewCharacter]]
+    [[Back|DofStart]]
+===
+
+title: DofGameNewCharacter
+---
+    <<hagCallNode name="DofFunctionGameInit">>
+
+    <<hagHistoryClean>>
+    <<hagCallNode name="DofFunctionAddPlayerStatsWithPoints">>
+    <<hagHighlightBlocksShow center=true>>
+
+    [[Random Stats|DofGameNewCharacterRandom]]
+    [[Manual Stats|DofGameNewCharacterManual]]
+===
+
+title: DofGameNewCharacterManual
+---
+    <<hagHistoryClean>>
+    <<while true>>
+        <<hagCallNode name="DofFunctionAddPlayerStatsWithPoints">>
+
+        // TODO use when fobia mechanics added
+        //<<hagCallNode name="DofFunctionAddPlayerStatsLevelUp">>
+        //<<hagCallNode name="DofFunctionAddEmptyBlock">>
+        //<<hagCallNode name="DofFunctionAddPlayerFobiaLevelUp">>
+
+        <<hagCallNode name="DofFunctionAddPlayerStatsEachLevelUp">>
+        <<if $dofPlayer.dofStatPointsLeft is 0>>
+            <<hagHighlightBlockSet type=image>>
+            <<hagHighlightBlockNoteAdd path="{$dofImageMenuArrowRight}" onclick="Dungeon">>
+        <<endif>>
+
+        <<hagHighlightBlocksShow center=true update=true columns=3>>
+        <<set $dofResult to result("")>>
+
+        // process results
+        <<set $DofFunctionNewCharacterManualStat_current to 0>> // TODO tmp
+        <<if $dofResult is "Back">>
+            <<if $dofPlayer.dofStatPointsLeft is 0>>
+                [[Ride to Dungeon|DofGameDungeonEntrance]]
+            <<endif>>
+            [[Continue with Points|DofGameNewCharacterManual]]
+            [[Discard Character|DofGameNewCharacter]]
+            <<stop>> // exit node
+        <<elseif $dofResult is "Dungeon">>
+            [[Ride to Dungeon|DofGameDungeonEntrance]]
+            [[Continue with Points|DofGameNewCharacterManual]]
+            [[Discard Character|DofGameNewCharacter]]
+            <<stop>> // exit node
+        <<elseif $dofResult is not "">>
+
+            // fnction input parameters
+            <<set $DofFunctionNewCharacterManualStat_min to $dofPlayer.dofStatMin>>
+            <<set $DofFunctionNewCharacterManualStat_max to $dofPlayer.dofStatMax>>
+            <<set $DofFunctionNewCharacterManualStat_actor to "dofPlayer">> #line:skip // in-place modify
+
+            <<if $dofResult is "Constitution">>
+                <<set $DofFunctionNewCharacterManualStat_current to $dofPlayer.dofStatConstitution>>
+                <<set $DofFunctionNewCharacterManualStat_image to $dofImageConstitution>>
+                <<set $DofFunctionNewCharacterManualStat_description to $dofTranslateConstitutionDescription>>
+                <<set $DofFunctionNewCharacterManualStat_func to "DofFunctionNpcStatConstitutionChange">>
+            <<elseif $dofResult is "Listen">>
+                <<set $DofFunctionNewCharacterManualStat_current to $dofPlayer.dofStatListen>>
+                <<set $DofFunctionNewCharacterManualStat_image to $dofImageListen>>
+                <<set $DofFunctionNewCharacterManualStat_description to $dofTranslateListenDescription>>
+                <<set $DofFunctionNewCharacterManualStat_func to "DofFunctionNpcStatListenChange">>
+            <<elseif $dofResult is "Perception">>
+                <<set $DofFunctionNewCharacterManualStat_current to $dofPlayer.dofStatPerception>>
+                <<set $DofFunctionNewCharacterManualStat_image to $dofImagePerception>>
+                <<set $DofFunctionNewCharacterManualStat_description to $dofTranslatePerceptionDescription>>
+                <<set $DofFunctionNewCharacterManualStat_func to "DofFunctionNpcStatPerceptionChange">>
+            <<elseif $dofResult is "Sneak">>
+                <<set $DofFunctionNewCharacterManualStat_current to $dofPlayer.dofStatSneak>>
+                <<set $DofFunctionNewCharacterManualStat_image to $dofImageSneak>>
+                <<set $DofFunctionNewCharacterManualStat_description to $dofTranslateSneakDescription>>
+                <<set $DofFunctionNewCharacterManualStat_func to "DofFunctionNpcStatSneakChange">>
+            <<elseif $dofResult is "Speed">>
+                <<set $DofFunctionNewCharacterManualStat_current to $dofPlayer.dofStatSpeed>>
+                <<set $DofFunctionNewCharacterManualStat_image to $dofImageSpeed>>
+                <<set $DofFunctionNewCharacterManualStat_description to $dofTranslateSpeedDescription>>
+                <<set $DofFunctionNewCharacterManualStat_func to "DofFunctionNpcStatSpeedChange">>
+            <<elseif $dofResult is "Attack">>
+                <<set $DofFunctionNewCharacterManualStat_current to $dofPlayer.dofStatAttack>>
+                <<set $DofFunctionNewCharacterManualStat_image to $dofImageAttack>>
+                <<set $DofFunctionNewCharacterManualStat_description to $dofTranslateAttackDescription>>
+                <<set $DofFunctionNewCharacterManualStat_func to "DofFunctionNpcStatAttackChange">>
+            <<elseif $dofResult is "Defense">>
+                <<set $DofFunctionNewCharacterManualStat_current to $dofPlayer.dofStatDefense>>
+                <<set $DofFunctionNewCharacterManualStat_image to $dofImageDefense>>
+                <<set $DofFunctionNewCharacterManualStat_description to $dofTranslateDefenseDescription>>
+                <<set $DofFunctionNewCharacterManualStat_func to "DofFunctionNpcStatDefenseChange">>
+            <<endif>>
+
+            <<hagCallNode name="DofFunctionNewCharacterManualStat">>
+
+        <<endif>>
+    <<endwhile>>
+
+===
+
+/**
+ * @brief Show single stat to level up
+ * @param DofFunctionNewCharacterManualStat_current Current stat level
+ * @param DofFunctionNewCharacterManualStat_min Min limit of stat
+ * @param DofFunctionNewCharacterManualStat_max Max limit of stat
+ * @param DofFunctionNewCharacterManualStat_image Path to image of the stat
+ * @param DofFunctionNewCharacterManualStat_description Description of the stat
+ * @param DofFunctionNewCharacterManualStat_actor Actor which will be changed and stats shown
+ * @param DofFunctionNewCharacterManualStat_func Function called to decreas/increase stat value
+ * @return DofFunctionNewCharacterManualStat_current Updated stat value
+ */
+title: DofFunctionNewCharacterManualStat
+---
+    //<<while $DofFunctionNewCharacterManualStat_actor.$dofStatPointsLeft is not 0>>
+    <<while true>>
+
+        <<hagCallNode name="DofFunctionAddPlayerImage">>
+        <<hagCallNode name="DofFunctionAddPlayerStats">>
+        <<hagCallNode name="DofFunctionAddEmptyBlock">>
+
+        <<hagCallNode name="DofFunctionAddEmptyBlock">>
+        <<hagCallNode name="DofFunctionAddNewPlayerStatPoints">>
+        <<hagCallNode name="DofFunctionAddEmptyBlock">>
+
+        // image + description
+        <<hagHighlightBlockSet type=image>>
+        <<hagHighlightBlockNoteAdd path="{$DofFunctionNewCharacterManualStat_image}">>
+
+        <<hagHighlightBlockSet type=info>>
+        <<hagHighlightBlockNoteAdd text="{$DofFunctionNewCharacterManualStat_description}">> #line:skip
+
+        <<hagCallNode name="DofFunctionAddEmptyBlock">>
+
+        // + - <-
+        <<hagHighlightBlockSet type=image>>
+        <<hagHighlightBlockNoteAdd path="{$dofImageMenuArrowLeft}" onclick="Back">>
+        <<hagHighlightBlockSet type=image>>
+        <<hagHighlightBlockNoteAdd path="{$dofImageMenuArrowUp}" onclick="+">>
+        <<hagHighlightBlockSet type=image>>
+        <<hagHighlightBlockNoteAdd path="{$dofImageMenuArrowDown}" onclick="-">>
+
+
+        <<hagHighlightBlocksShow center=true update=true columns=3>>
+
+        // process results
+        <<set $dofResult to result("")>>
+        <<if $dofResult is "Back">>
+            <<stop>>
+        <<elseif $dofResult is "+" and $DofFunctionNewCharacterManualStat_current < $DofFunctionNewCharacterManualStat_max>>
+            <<set $DofFunctionNewCharacterManualStat_current to $DofFunctionNewCharacterManualStat_current + 1>>
+            <<set $DofFunctionNewCharacterManualStat_actor.$dofStatPointsLeft to $DofFunctionNewCharacterManualStat_actor.$dofStatPointsLeft - 1>>
+        <<elseif $dofResult is "-" and $DofFunctionNewCharacterManualStat_current > $DofFunctionNewCharacterManualStat_min>>
+            <<set $DofFunctionNewCharacterManualStat_current to $DofFunctionNewCharacterManualStat_current - 1>>
+            <<set $DofFunctionNewCharacterManualStat_actor.$dofStatPointsLeft to $DofFunctionNewCharacterManualStat_actor.$dofStatPointsLeft + 1>>
+        <<endif>>
+
+        // change actor which will be displayed
+        <<set $DofFunctionNpcStatConstitutionChange_actor to $DofFunctionNewCharacterManualStat_actor>>
+        <<set $DofFunctionNpcStatConstitutionChange_value to $DofFunctionNewCharacterManualStat_current>>
+        <<hagCallNode name="{$DofFunctionNewCharacterManualStat_func}">>
+    <<endwhile>>
+===
+
+/**
+ * @brief Function to change constitution for an actor
+ * @param DofFunctionNpcStatConstitutionChange_actor Actor which will be changed
+ * @param DofFunctionNpcStatConstitutionChange_value Value to update
+ */
+title: DofFunctionNpcStatConstitutionChange
+---
+    <<set $DofFunctionNpcStatConstitutionChange_actor.$dofStatConstitution to $DofFunctionNpcStatConstitutionChange_value>>
+===
+
+/**
+ * @brief Function to change listen for an actor
+ * @param DofFunctionNpcStatConstitutionChange_actor Actor which will be changed
+ * @param DofFunctionNpcStatConstitutionChange_value Value to update
+ */
+title: DofFunctionNpcStatListenChange
+---
+    <<set $DofFunctionNpcStatConstitutionChange_actor.$dofStatListen to $DofFunctionNpcStatConstitutionChange_value>>
+===
+
+/**
+ * @brief Function to change perception for an actor
+ * @param DofFunctionNpcStatConstitutionChange_actor Actor which will be changed
+ * @param DofFunctionNpcStatConstitutionChange_value Value to update
+ */
+title: DofFunctionNpcStatPerceptionChange
+---
+    <<set $DofFunctionNpcStatConstitutionChange_actor.$dofStatPerception to $DofFunctionNpcStatConstitutionChange_value>>
+===
+
+/**
+ * @brief Function to change sneak for an actor
+ * @param DofFunctionNpcStatConstitutionChange_actor Actor which will be changed
+ * @param DofFunctionNpcStatConstitutionChange_value Value to update
+ */
+title: DofFunctionNpcStatSneakChange
+---
+    <<set $DofFunctionNpcStatConstitutionChange_actor.$dofStatSneak to $DofFunctionNpcStatConstitutionChange_value>>
+===
+
+/**
+ * @brief Function to change speed for an actor
+ * @param DofFunctionNpcStatConstitutionChange_actor Actor which will be changed
+ * @param DofFunctionNpcStatConstitutionChange_value Value to update
+ */
+title: DofFunctionNpcStatSpeedChange
+---
+    <<set $DofFunctionNpcStatConstitutionChange_actor.$dofStatSpeed to $DofFunctionNpcStatConstitutionChange_value>>
+===
+
+/**
+ * @brief Function to change attack for an actor
+ * @param DofFunctionNpcStatConstitutionChange_actor Actor which will be changed
+ * @param DofFunctionNpcStatConstitutionChange_value Value to update
+ */
+title: DofFunctionNpcStatAttackChange
+---
+    <<set $DofFunctionNpcStatConstitutionChange_actor.$dofStatAttack to $DofFunctionNpcStatConstitutionChange_value>>
+===
+
+/**
+ * @brief Function to change defense for an actor
+ * @param DofFunctionNpcStatConstitutionChange_actor Actor which will be changed
+ * @param DofFunctionNpcStatConstitutionChange_value Value to update
+ */
+title: DofFunctionNpcStatDefenseChange
+---
+    <<set $DofFunctionNpcStatConstitutionChange_actor.$dofStatDefense to $DofFunctionNpcStatConstitutionChange_value>>
+===
+
+title: DofGameNewCharacterRandom
+---
+    <<set $dofStatId                to 0>>
+
+    <<set $dofStatConstitutionId    to 1>>
+    <<set $dofStatListenId          to 2>>
+    <<set $dofStatPerceptionId      to 3>>
+    <<set $dofStatSneakId           to 4>>
+    <<set $dofStatSpeedId           to 5>>
+    <<set $dofStatAttackId          to 6>>
+    <<set $dofStatDefenseId         to 7>>
+
+    <<hagCallNode name="DofFunctionInitNewPlayerStats">>
+
+    // random point iteration
+    <<while $dofPlayer.dofStatPointsLeft is not 0>>
+
+        <<set $dofStatId to random(1, 7)>>
+
+        // Constitution
+        <<if $dofStatId is $dofStatConstitutionId and $dofPlayer.dofStatConstitution < $dofPlayer.dofStatMax>>
+            <<set $dofPlayer.dofStatConstitution to $dofPlayer.dofStatConstitution + 1>>
+            <<set $dofPlayer.dofStatPointsLeft to $dofPlayer.dofStatPointsLeft - 1>>
+        <<endif>>
+
+        // Listen
+        <<if $dofStatId is $dofStatListenId and $dofPlayer.dofStatListen < $dofPlayer.dofStatMax>>
+            <<set $dofPlayer.dofStatListen to $dofPlayer.dofStatListen + 1>>
+            <<set $dofPlayer.dofStatPointsLeft to $dofPlayer.dofStatPointsLeft - 1>>
+        <<endif>>
+
+        // Perception
+        <<if $dofStatId is $dofStatPerceptionId and $dofPlayer.dofStatPerception < $dofPlayer.dofStatMax>>
+            <<set $dofPlayer.dofStatPerception to $dofPlayer.dofStatPerception + 1>>
+            <<set $dofPlayer.dofStatPointsLeft to $dofPlayer.dofStatPointsLeft - 1>>
+        <<endif>>
+
+        // Sneak
+        <<if $dofStatId is $dofStatSneakId and $dofPlayer.dofStatSneak < $dofPlayer.dofStatMax>>
+            <<set $dofPlayer.dofStatSneak to $dofPlayer.dofStatSneak + 1>>
+            <<set $dofPlayer.dofStatPointsLeft to $dofPlayer.dofStatPointsLeft - 1>>
+        <<endif>>
+
+        // Speed
+        <<if $dofStatId is $dofStatSpeedId and $dofPlayer.dofStatSpeed < $dofPlayer.dofStatMax>>
+            <<set $dofPlayer.dofStatSpeed to $dofPlayer.dofStatSpeed + 1>>
+            <<set $dofPlayer.dofStatPointsLeft to $dofPlayer.dofStatPointsLeft - 1>>
+        <<endif>>
+
+        // Attack
+        <<if $dofStatId is $dofStatAttackId and $dofPlayer.dofStatAttack < $dofPlayer.dofStatMax>>
+            <<set $dofPlayer.dofStatAttack to $dofPlayer.dofStatAttack + 1>>
+            <<set $dofPlayer.dofStatPointsLeft to $dofPlayer.dofStatPointsLeft - 1>>
+        <<endif>>
+
+        // Defense
+        <<if $dofStatId is $dofStatDefenseId and $dofPlayer.dofStatDefense < $dofPlayer.dofStatMax>>
+            <<set $dofPlayer.dofStatDefense to $dofPlayer.dofStatDefense + 1>>
+            <<set $dofPlayer.dofStatPointsLeft to $dofPlayer.dofStatPointsLeft - 1>>
+        <<endif>>
+
+    <<endwhile>>
+
+    <<hagHistoryClean>>
+    <<hagCallNode name="DofFunctionAddPlayerStatsWithPoints">>
+    <<hagHighlightBlocksShow center=true>>
+
+
+    <<if $dofPlayer.dofStatPointsLeft is 0>>
+        [[Ride to Dungeon|DofGameDungeonEntrance]]
+    <<endif>>
+    [[Back|DofGameNewCharacter]]
+===

@@ -1,0 +1,31 @@
+title: DofGameSave
+---
+    // // Backup current environment to string
+    // <<set $localSave to save()>>
+    // 
+    // // Show it to user, so the backup string could be copied
+    // <<set $localBlock to 1>>
+    // <<set $localBlock to $localBlock + 1>>
+    // <<hagHighlightBlockSet block=$localBlock type=info>>
+    // <<hagHighlightBlockNoteAdd block=$localBlock pos=0 text="$localSave">>
+    // <<hagHighlightBlocksShow clear=true>>
+
+    // Show downloadable save file
+    <<hagSaveEnvironment loadnode="DofGameDungeonEntrance">>
+
+    [[Back|DofGameDungeonEntrance]]
+===
+
+title: DofGameLoad
+---
+    <<hagLoadEnvironment>>
+
+    <<set $dofOperationResult to true>>
+    <<set $dofOperationResult to success()>>
+    <<if not $dofOperationResult>>
+        Load was not successful. Bad or outdated save file ::(
+
+        [[Again|DofGameLoad]]
+        [[Back|DofStart]]
+    <<endif>>
+===

@@ -1,0 +1,13 @@
+title: DofGamePlayerEquipment
+---
+    // show equipment title
+    <<hagCallNode name="DofFunctionAddPlayerEquipmentTitle">>
+    <<hagHighlightBlocksShow>>
+
+    // show equipment items
+    <<hagCallNode name="DofFunctionAddPlayerEquipment">>
+    <<hagHighlightBlocksShow>>
+
+    [[Back|DofGameDungeonRoom]]
+
+===
