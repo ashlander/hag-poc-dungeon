@@ -36,19 +36,23 @@ title: DofFunctionInitTranslations
 title: DofFunctionInitSlotNames
 ---
     <<set $dofNameInventorySlot                         to "DofEnvSlot">>
+    <<set $dofNameRoomArea                              to "DofRoomArea">>
+    <<set $dofNameRandomGeneratorSlot                   to "DofRandSlot">>
+    <<set $dofNameChestItemSlot                         to "DofChestItemSlot">>
+    <<set $dofNameAltChestItemSlot                      to "DofAltChestItemSlot">>
 ===
 
 
 title: DofFunctionInitImagePaths
 ---
     // stats
-    <<set $dofImageConstitution                         to "/img/game-icons/hearts.png">>
-    <<set $dofImageListen                               to "/img/game-icons/human-ear.png">>
-    <<set $dofImagePerception                           to "/img/game-icons/eyeball.png">>
-    <<set $dofImageSneak                                to "/img/game-icons/hooded-figure.png">>
-    <<set $dofImageSpeed                                to "/img/game-icons/wingfoot.png">>
-    <<set $dofImageAttack                               to "/img/game-icons/biceps.png">>
-    <<set $dofImageDefense                              to "/img/game-icons/bordered-shield.png">>
+    <<set $dofImageConstitution                         to "img/dof/game-icons/hearts.png">>
+    <<set $dofImageListen                               to "img/dof/game-icons/human-ear.png">>
+    <<set $dofImagePerception                           to "img/dof/game-icons/eyeball.png">>
+    <<set $dofImageSneak                                to "img/dof/game-icons/hooded-figure.png">>
+    <<set $dofImageSpeed                                to "img/dof/game-icons/wingfoot.png">>
+    <<set $dofImageAttack                               to "img/dof/game-icons/biceps.png">>
+    <<set $dofImageDefense                              to "img/dof/game-icons/bordered-shield.png">>
 
     // inline stats
     <<set $dofImageInlineConstitution                   to "[img]{$dofImageConstitution}[/img]">>
@@ -64,59 +68,67 @@ title: DofFunctionInitImagePaths
     <<set $dofImageFobiaLevelUp                         to "{$dofImagePerception}">> // TODO other fobia image
 
     // inventory
-    <<set $dofImageInventoryEmptySlot                   to "img/game-icons/swap-bag.slot.png">>
+    <<set $dofImageInventoryEmptySlot                   to "img/dof/game-icons/swap-bag.slot.png">>
 
     // equipment
-    <<set $dofImageEquipmentNecklaceEmptySlot           to "img/game-icons/gem-pendant.slot.png">> // necklace
-    <<set $dofImageEquipmentHelmEmptySlot               to "img/game-icons/spartan-helmet.slot.png">> // helm
-    <<set $dofImageEquipmentRingEmptySlot               to "img/game-icons/power-ring.slot.png">> // ring
-    <<set $dofImageEquipmentRightArmEmptySlot           to "img/game-icons/gloves.slot.png">> // right arm
-    <<set $dofImageEquipmentBodyEmptySlot               to "img/game-icons/lamellar.slot.png">> // body
-    <<set $dofImageEquipmentLeftArmEmptySlot            to "img/game-icons/gloves.slot.png">> // left arm
-    <<set $dofImageEquipmentQuick1EmptySlot             to "img/game-icons/knapsack.slot.png">> // quick slot 1
-    <<set $dofImageEquipmentBootsEmptySlot              to "img/game-icons/boots.slot.png">> // boots
-    <<set $dofImageEquipmentQuick2EmptySlot             to "img/game-icons/knapsack.slot.png">> //  quick slot 1
+    <<set $dofImageEquipmentNecklaceEmptySlot           to "img/dof/game-icons/gem-pendant.slot.png">> // necklace
+    <<set $dofImageEquipmentHelmEmptySlot               to "img/dof/game-icons/spartan-helmet.slot.png">> // helm
+    <<set $dofImageEquipmentRingEmptySlot               to "img/dof/game-icons/power-ring.slot.png">> // ring
+    <<set $dofImageEquipmentRightArmEmptySlot           to "img/dof/game-icons/gloves.slot.png">> // right arm
+    <<set $dofImageEquipmentBodyEmptySlot               to "img/dof/game-icons/lamellar.slot.png">> // body
+    <<set $dofImageEquipmentLeftArmEmptySlot            to "img/dof/game-icons/gloves.slot.png">> // left arm
+    <<set $dofImageEquipmentQuick1EmptySlot             to "img/dof/game-icons/knapsack.slot.png">> // quick slot 1
+    <<set $dofImageEquipmentBootsEmptySlot              to "img/dof/game-icons/boots.slot.png">> // boots
+    <<set $dofImageEquipmentQuick2EmptySlot             to "img/dof/game-icons/knapsack.slot.png">> //  quick slot 1
 
     // map empty ground
-    <<set $dofImageLeftTopGround                        to "/img/game-ground/LTGround.png">>
-    <<set $dofImageTopGround                            to "/img/game-ground/TopGround.png">>
-    <<set $dofImageRightTopGround                       to "/img/game-ground/RTGround.png">>
+    <<set $dofImageLeftTopGround                        to "img/dof/game-ground/LTGround.png">>
+    <<set $dofImageTopGround                            to "img/dof/game-ground/TopGround.png">>
+    <<set $dofImageRightTopGround                       to "img/dof/game-ground/RTGround.png">>
 
-    <<set $dofImageLeftMidGround                        to "/img/game-ground/LMGround.png">>
-    <<set $dofImageMiddleGround                         to "/img/game-ground/MidGround.png">>
-    <<set $dofImageRightMidGround                       to "/img/game-ground/RMGround.png">>
+    <<set $dofImageLeftMidGround                        to "img/dof/game-ground/LMGround.png">>
+    <<set $dofImageMiddleGround                         to "img/dof/game-ground/MidGround.png">>
+    <<set $dofImageRightMidGround                       to "img/dof/game-ground/RMGround.png">>
 
-    <<set $dofImageLeftBottomGround                     to "/img/game-ground/LBGround.png">>
-    <<set $dofImageBottomGround                         to "/img/game-ground/BottomGround.png">>
-    <<set $dofImageRightBottomGround                    to "/img/game-ground/RBGround.png">>
+    <<set $dofImageLeftBottomGround                     to "img/dof/game-ground/LBGround.png">>
+    <<set $dofImageBottomGround                         to "img/dof/game-ground/BottomGround.png">>
+    <<set $dofImageRightBottomGround                    to "img/dof/game-ground/RBGround.png">>
 
-    <<set $dofImageMiddleCorridorGround                 to "/img/game-ground/MidCorridorGround.png">>
-    <<set $dofImageMiddleCorridorCharGround             to "/img/game-ground/MidCorridorCharGround.png">>
+    <<set $dofImageMiddleCorridorGround                 to "img/dof/game-ground/MidCorridorGround.png">>
+    <<set $dofImageMiddleCorridorCharGround             to "img/dof/game-ground/MidCorridorCharGround.png">>
 
     // map doors
-    <<set $dofImageTopDoor                              to "/img/game-ground/TopDoor.png">>
-    <<set $dofImageRightDoor                            to "/img/game-ground/RightDoor.png">>
-    <<set $dofImageLeftDoor                             to "/img/game-ground/LeftDoor.png">>
-    <<set $dofImageBottomDoor                           to "/img/game-ground/BottomDoor.png">>
+    <<set $dofImageTopDoor                              to "img/dof/game-ground/TopDoor.png">>
+    <<set $dofImageRightDoor                            to "img/dof/game-ground/RightDoor.png">>
+    <<set $dofImageLeftDoor                             to "img/dof/game-ground/LeftDoor.png">>
+    <<set $dofImageBottomDoor                           to "img/dof/game-ground/BottomDoor.png">>
 
-    <<set $dofImageRightCorridorDoor                    to "/img/game-ground/RightCorridorDoor.png">>
-    <<set $dofImageLeftCorridorDoor                     to "/img/game-ground/LeftCorridorDoor.png">>
+    <<set $dofImageRightCorridorDoor                    to "img/dof/game-ground/RightCorridorDoor.png">>
+    <<set $dofImageLeftCorridorDoor                     to "img/dof/game-ground/LeftCorridorDoor.png">>
 
     // map other
-    <<set $dofImageMiddleChest                          to "/img/game-ground/MidChest.png">>
-    <<set $dofImageMiddleEnemy                          to "/img/game-ground/MidEnemy4.png">>
+    <<set $dofImageExit                                 to "img/dof/assets/Isometric dungeon tiles 2d by RgsDev/Isometric tiles/Ladder 1 Left.png">>
+    <<set $dofImageChest                                to "img/dof/assets/Isometric dungeon tiles 2d by RgsDev/Isometric tiles/Chest Left Opened.png">>
+    <<set $dofImageAltar                                to "img/dof/assets/Isometric dungeon tiles 2d by RgsDev/Isometric tiles/Pilar.png">>
+    <<set $dofImageTrader                               to "img/dof/assets/dungeon-tileset/NPC/Char1.png">>
+    <<set $dofImageEvent                                to "img/dof/assets/dungeon-tileset/NPC/Skull.png">>
+    <<set $dofImageEnemyPartPath                        to "img/dof/assets/dungeon-tileset/NPC/NPC">>
+    <<set $dofImageEnemy1                               to "img/dof/assets/dungeon-tileset/NPC/NPC1.png">>
+    <<set $dofImageEnemy2                               to "img/dof/assets/dungeon-tileset/NPC/NPC2.png">>
+    <<set $dofImageEnemy3                               to "img/dof/assets/dungeon-tileset/NPC/NPC3.png">>
+    <<set $dofImageEnemy4                               to "img/dof/assets/dungeon-tileset/NPC/NPC4.png">>
+    <<set $dofImageEnemy5                               to "img/dof/assets/dungeon-tileset/NPC/NPC5.png">>
 
     // player
-    <<set $dofImageCommonPlayer                         to "/img/game-player/Char1.png">>
+    <<set $dofImageCommonPlayer                         to "img/dof/game-player/Char1.png">>
 
     // menu
-    <<set $dofImageMenuArrowUp                          to "/img/game-menu/Arrow-up.png">>
-    <<set $dofImageMenuArrowDown                        to "/img/game-menu/Arrow-down.png">>
-    <<set $dofImageMenuArrowRight                       to "/img/game-menu/Arrow-right.png">>
-    <<set $dofImageMenuArrowLeft                        to "/img/game-menu/Arrow-left.png">>
+    <<set $dofImageMenuArrowUp                          to "img/dof/game-menu/Arrow-up.png">>
+    <<set $dofImageMenuArrowDown                        to "img/dof/game-menu/Arrow-down.png">>
+    <<set $dofImageMenuArrowRight                       to "img/dof/game-menu/Arrow-right.png">>
+    <<set $dofImageMenuArrowLeft                        to "img/dof/game-menu/Arrow-left.png">>
 
 ===
-
 
 // Initialize player stats
 title: DofFunctionInitNewPlayerStats
@@ -125,15 +137,6 @@ title: DofFunctionInitNewPlayerStats
     <<set $dofPlayer.dofStatMin                         to 1>> // max 5
     <<set $dofPlayer.dofStatMax                         to 5>> // max 5
     <<set $dofPlayer.dofStatPointsLeft                  to 11>> // max (35/2)+1 -7 of initial = 11
-
-    // TODO tmp initialize player stats
-    <<set $dofPlayer.dofStatConstitution                to 0>>
-    <<set $dofPlayer.dofStatListen                      to 0>>
-    <<set $dofPlayer.dofStatPerception                  to 0>>
-    <<set $dofPlayer.dofStatSneak                       to 0>>
-    <<set $dofPlayer.dofStatSpeed                       to 0>>
-    <<set $dofPlayer.dofStatAttack                      to 0>>
-    <<set $dofPlayer.dofStatDefense                     to 0>>
 
     // initialize player stats
     <<set $dofPlayer.dofStatConstitution                to $dofPlayer.dofStatMin>>
@@ -145,7 +148,7 @@ title: DofFunctionInitNewPlayerStats
     <<set $dofPlayer.dofStatDefense                     to $dofPlayer.dofStatMin>>
 
     // initialize inventory size
-    <<set $dofPlayer.dofInventorySize to 5>>
+    <<set $dofPlayer.dofInventorySize                   to 5>>
 
 ===
 
@@ -183,21 +186,70 @@ title: DofFunctionGameInit
         <<set $dofIndex to $dofIndex + 1>>
     <<endwhile>>
 
-    // initialize map variables
-    <<set $dofX                         to 0>>
-    <<set $dofY                         to 0>>
-    <<set $dofNextX                     to 0>>
-    <<set $dofNextY                     to 0>>
+    // initialize player location
+    <<set $dofPlayer.dofX               to 0>>
+    <<set $dofPlayer.dofY               to 0>>
+    <<set $dofPlayer.dofNextX           to 0>>
+    <<set $dofPlayer.dofNextY           to 0>>
 
+    // initialize stat indexes, used for random stat distribution
+    <<set $dofStatConstitutionId        to 1>>
+    <<set $dofStatListenId              to 2>>
+    <<set $dofStatPerceptionId          to 3>>
+    <<set $dofStatSneakId               to 4>>
+    <<set $dofStatSpeedId               to 5>>
+    <<set $dofStatAttackId              to 6>>
+    <<set $dofStatDefenseId             to 7>>
+
+    <<set $dofStatMinId                 to $dofStatConstitutionId>>
+    <<set $dofStatMaxId                 to $dofStatDefenseId>>
+
+    // initialize item type indexes, used for random item generation
+    <<set $dofItemMoneyId               to 1>>
+    <<set $dofItemPotionId              to 2>>
+    <<set $dofItemRingId                to 3>>
+    <<set $dofItemNecklaceId            to 4>>
+    <<set $dofItemToolsId               to 5>>
+    <<set $dofItemBagId                 to 6>>
+    <<set $dofItemScrollId              to 7>>
+    <<set $dofItemWeaponId              to 8>>
+    <<set $dofItemArmorId               to 9>>
+
+    <<set $dofItemMinId                 to $dofItemMoneyId>>
+    <<set $dofItemMaxId                 to $dofItemArmorId>>
+
+    // initialize room areas type indexes, used for random room generation
+    <<set $dofRoomAreaLTId              to 1>>
+    <<set $dofRoomAreaLMTId             to 2>>
+    <<set $dofRoomAreaRMTId             to 3>>
+    <<set $dofRoomAreaRTId              to 4>>
+    <<set $dofRoomAreaLMId              to 5>>
+    <<set $dofRoomAreaLMMId             to 6>>
+    <<set $dofRoomAreaRMMId             to 7>>
+    <<set $dofRoomAreaRMId              to 8>>
+    <<set $dofRoomAreaLBId              to 9>>
+    <<set $dofRoomAreaLMBId             to 10>>
+    <<set $dofRoomAreaRMBId             to 11>>
+    <<set $dofRoomAreaRBId              to 12>>
+
+    <<set $dofRoomAreaMinId             to $dofRoomAreaLTId>>
+    <<set $dofRoomAreaMaxId             to $dofRoomAreaRBId>>
+
+===
+
+// Initialize function parameters to help variable detection
+// if function is not used, the variable discovery will not find it
+title: DofFunctionInitParams
+---
 ===
 
 // on start initialization
 title: DofFunctionInitOnStart
 ---
-
     <<hagCallNode name="DofFunctionInitStyles">>
     <<hagCallNode name="DofFunctionInitImagePaths">>
     <<hagCallNode name="DofFunctionInitSlotNames">>
+    <<hagCallNode name="DofFunctionInitRoomConstants">>
 
     // TODO language detection
 

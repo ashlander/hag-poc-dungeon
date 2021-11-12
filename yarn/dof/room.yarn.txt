@@ -1,11 +1,31 @@
 title: DofGameDungeonRoom
 ---
-    <<set $dofX to $dofNextX>>
-    <<set $dofY to $dofNextY>>
+    <<set $dofPlayer.dofX to $dofPlayer.dofNextX>>
+    <<set $dofPlayer.dofY to $dofPlayer.dofNextY>>
     <<set $dofPlayer.dofOrientation to $dofPlayer.dofNextOrientation>>
-    <<set $dofRoom to "Room x{$dofX} y{$dofY}">>
+    <<set $dofRoom to "Room x{$dofPlayer.dofX} y{$dofPlayer.dofY}">>
+    <<set $dofRoom.$dofX to $dofPlayer.dofX>>
+    <<set $dofRoom.$dofY to $dofPlayer.dofY>>
+
+//// DEBUG
+//<<box>>
+//Room info:
+//    room        = {$dofRoom}
+//    run         = player {$dofPlayer.$dofRunNum}/{$dofRoom.$dofRunNum} room
+//<<endbox>>
+
 
     //DEBUG: You are in the room {$dofRoom}
+
+    // generate room if player was upstairs, some of the rooms will be unchanged
+    <<if $dofPlayer.$dofRunNum > $dofRoom.$dofRunNum>>
+        // generate room
+        <<set $DofFunctionGenerateRoom_room to $dofRoom>>
+        <<hagCallNode name="DofFunctionGenerateRoom">>
+
+        // set run number, so it will be unchanged until dungeon exit
+        <<set $dofRoom.$dofRunNum to $dofPlayer.$dofRunNum>>
+    <<endif>>
 
 //    // check if visited room, output something funny
 //    <<if $dofRoom.$dofVisited>>
@@ -14,7 +34,7 @@ title: DofGameDungeonRoom
 //        // TODO random room description
 //    <<endif>>
 //
-//    <<if $dofX is 0 and $dofY is 0>>
+//    <<if $dofPlayer.dofX is 0 and $dofPlayer.dofY is 0>>
 //        You are near entrance spot. You have {$dofPlayer.dofGold} coins in your pocket.
 //        [[Let me out!|DofGameDungeonEntrance]] // TODO price to pay
 //    <<endif>>
@@ -23,15 +43,36 @@ title: DofGameDungeonRoom
 
     // show room map
     <<hagHistoryClean>>
-    <<hagCallNode name="DofFunctionAddMapRoomTemplate">>
+
+//// DEBUG
+//<<box>>
+//Room info:
+//    room        = {$dofRoom}
+//    run         = player {$dofPlayer.$dofRunNum}/{$dofRoom.$dofRunNum} room
+//<<endbox>>
+//
+//
+//// DEBUG
+//<<box>>
+//Chest dice:
+//    chance      = positive {$dofRandomRoomChest.$dofPositive}/{$dofRandomRoomChest.$dofNegative} negative
+//    boost       = positive {$dofRandomRoomChest.$dofPositiveBoost}/{$dofRandomRoomChest.$dofNegativeBoost} negative
+//    current     = positive {$dofRandomRoomChest.$dofPositiveNum}/{$dofRandomRoomChest.$dofNegativeNum} negative
+//    roll        = {$dofRandomRoomChest.$dofRoll}
+//    positive    = {$dofRandomRoomChest.$dofRollPositive}
+//<<endbox>>
+
+
+    <<set $DofFunctionAddMapRoom_room to $dofRoom>>
+    <<hagCallNode name="DofFunctionAddMapRoom">>
     <<hagHighlightBlocksShow columns=4 center=true>>
     <<set $dofResult to result("")>>
 
     // process result
-    <<if $dofResult is "RightDoor">> // forward
+    <<if $dofResult is "TopDoor">> // forward
         // orientation preserved
         <<hagCallNode name="DofGameDungeonCorridor">>
-    <<elseif $dofResult is "TopDoor">> // left
+    <<elseif $dofResult is "LeftDoor">> // left
         <<if $dofPlayer.dofOrientation is "YPositive">>
             <<set $dofPlayer.dofNextOrientation to "XNegative">>
         <<elseif $dofPlayer.dofOrientation is "XNegative">>
@@ -46,7 +87,7 @@ title: DofGameDungeonRoom
             // TODO Recover option
         <<endif>>
         <<hagCallNode name="DofGameDungeonCorridor">>
-    <<elseif $dofResult is "BottomDoor">> // right
+    <<elseif $dofResult is "RightDoor">> // right
         <<if $dofPlayer.dofOrientation is "YPositive">>
             <<set $dofPlayer.dofNextOrientation to "XPositive">>
         <<elseif $dofPlayer.dofOrientation is "XPositive">>
@@ -61,7 +102,7 @@ title: DofGameDungeonRoom
             // TODO Recover option
         <<endif>>
         <<hagCallNode name="DofGameDungeonCorridor">>
-    <<elseif $dofResult is "LeftDoor">> // back
+    <<elseif $dofResult is "BottomDoor">> // back
         <<if $dofPlayer.dofOrientation is "YPositive">>
             <<set $dofPlayer.dofNextOrientation to "YNegative">>
         <<elseif $dofPlayer.dofOrientation is "YNegative">>
@@ -96,6 +137,8 @@ title: DofGameDungeonRoom
         <<hagHighlightBlocksShow>>
 
         [[Back|DofGameDungeonRoom]]
+    <<else>>
+        [[DofGameDungeonRoom]]
     <<endif>>
 
 ===

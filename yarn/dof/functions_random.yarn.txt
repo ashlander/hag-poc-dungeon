@@ -1,0 +1,159 @@
+/**
+ * @brief Clear dice instance
+ * @param DofFunctionDiceClear_actor Actor name of dice
+ * expected
+ *  dofPositive
+ *  dofNegative
+ */
+title: DofFunctionDiceClear
+---
+    <<set $_actor.$dofPositiveNum      to $_actor.$dofPositive>>
+    <<set $_actor.$dofNegativeNum      to $_actor.$dofNegative>>
+    <<set $_actor.$dofPositiveBoost    to 0>>
+    <<set $_actor.$dofNegativeBoost    to 0>>
+    <<set $_actor.$dofRoll             to 0>>
+===
+
+/**
+ * @brief Rool dice, try to be fare, full random is often annoying
+ * @param DofFunctionDiceRoll_actor Actor name of dice
+ * expected
+ *  dofPositive
+ *  dofPositiveBoost
+ *  dofNegative
+ *  dofNegativeBoost
+ * @return DofFunctionDiceRoll_actor Updated actor
+ *  dofRoll Number of dice
+ *  dofRollPositive True if positive
+ */
+title: DofFunctionDiceRoll
+---
+    // random roll
+    <<set $_randomMax to $_actor.$dofPositive + $_actor.$dofPositiveBoost + $_actor.$dofNegative + $_actor.$dofNegativeBoost>>
+    <<set $_roll to random(1, $_randomMax)>>
+
+    // process results
+    <<if $_roll <= $_actor.$dofPositive + $_actor.$dofPositiveBoost>>
+        <<set $_actor.$dofRollPositive to true>>
+        <<set $_actor.$dofPositiveNum to $_actor.$dofPositiveNum - 1>>
+    <<else>>
+        <<set $_actor.$dofRollPositive to false>>
+        <<set $_actor.$dofNegativeNum to $_actor.$dofNegativeNum - 1>>
+    <<endif>>
+    <<set $_actor.$dofRoll to $_roll>>
+
+    // post process
+    <<if $_actor.$dofPositiveNum <= 0 && $_actor.$dofNegativeNum <= 0>>
+        // regenerate numbers without loosing entire progress
+        <<set $_actor.$dofPositiveNum to $_actor.$dofPositiveNum + $_actor.$dofPositive>>
+        <<set $_actor.$dofNegativeNum to $_actor.$dofNegativeNum + $_actor.$dofNegative>>
+        <<set $_actor.$dofPositiveBoost    to 0>>
+        <<set $_actor.$dofNegativeBoost    to 0>>
+    <<endif>>
+
+    // if one value is depleted, boost other value chances, but do not restrict depleted one
+    <<if $_actor.$dofPositiveNum <= 0>>
+        <<set $_diff to abs($_actor.$dofPositive - $_actor.$dofNegative)>>
+        <<set $_actor.$dofNegativeBoost to $_actor.$dofNegativeBoost + 1 + ($_diff / 10)>>
+    <<elseif $_actor.$dofNegativeNum <= 0>>
+        <<set $_diff to abs($_actor.$dofPositive - $_actor.$dofNegative)>>
+        <<set $_actor.$dofPositiveBoost to $_actor.$dofPositiveBoost + 1 + ($_diff / 10)>>
+    <<endif>>
+===
+
+// Initialize dices
+title: DofFunctionInitDices
+---
+    // room generation
+    <<set $dofRandomRoom to "{$dofNameRandomGeneratorSlot}Room">>
+    <<set $DofFunctionDiceClear_actor to $dofRandomRoom>>
+    <<set $DofFunctionDiceClear_actor.$dofPositive    to 50>>
+    <<set $DofFunctionDiceClear_actor.$dofNegative    to 50>>
+    <<hagCallNode name="DofFunctionDiceClear">>
+
+    <<set $dofRandomRoomChest to "{$dofNameRandomGeneratorSlot}RoomChest">>
+    <<set $DofFunctionDiceClear_actor to $dofRandomRoomChest>>
+    <<set $DofFunctionDiceClear_actor.$dofPositive    to 50>>
+    <<set $DofFunctionDiceClear_actor.$dofNegative    to 50>>
+    <<hagCallNode name="DofFunctionDiceClear">>
+
+    <<set $dofRandomRoomTrader to "{$dofNameRandomGeneratorSlot}RoomTrader">>
+    <<set $DofFunctionDiceClear_actor to $dofRandomRoomTrader>>
+    <<set $DofFunctionDiceClear_actor.$dofPositive    to 50>>
+    <<set $DofFunctionDiceClear_actor.$dofNegative    to 50>>
+    <<hagCallNode name="DofFunctionDiceClear">>
+
+    <<set $dofRandomRoomAltar to "{$dofNameRandomGeneratorSlot}RoomAltar">>
+    <<set $DofFunctionDiceClear_actor to $dofRandomRoomAltar>>
+    <<set $DofFunctionDiceClear_actor.$dofPositive    to 50>>
+    <<set $DofFunctionDiceClear_actor.$dofNegative    to 50>>
+    <<hagCallNode name="DofFunctionDiceClear">>
+
+    <<set $dofRandomRoomEnemy to "{$dofNameRandomGeneratorSlot}RoomEnemy">>
+    <<set $DofFunctionDiceClear_actor to $dofRandomRoomEnemy>>
+    <<set $DofFunctionDiceClear_actor.$dofPositive    to 50>>
+    <<set $DofFunctionDiceClear_actor.$dofNegative    to 50>>
+    <<hagCallNode name="DofFunctionDiceClear">>
+
+    <<set $dofRandomRoomEvent to "{$dofNameRandomGeneratorSlot}RoomEvent">>
+    <<set $DofFunctionDiceClear_actor to $dofRandomRoomEvent>>
+    <<set $DofFunctionDiceClear_actor.$dofPositive    to 50>>
+    <<set $DofFunctionDiceClear_actor.$dofNegative    to 50>>
+    <<hagCallNode name="DofFunctionDiceClear">>
+
+    // item generation
+    <<set $dofRandomItemMoney to "{$dofNameRandomGeneratorSlot}Money">>
+    <<set $DofFunctionDiceClear_actor to $dofRandomItemMoney>>
+    <<set $DofFunctionDiceClear_actor.$dofPositive    to 50>>
+    <<set $DofFunctionDiceClear_actor.$dofNegative    to 50>>
+    <<hagCallNode name="DofFunctionDiceClear">>
+
+    <<set $dofRandomItemPotion to "{$dofNameRandomGeneratorSlot}Potion">>
+    <<set $DofFunctionDiceClear_actor to $dofRandomItemPotion>>
+    <<set $DofFunctionDiceClear_actor.$dofPositive    to 50>>
+    <<set $DofFunctionDiceClear_actor.$dofNegative    to 50>>
+    <<hagCallNode name="DofFunctionDiceClear">>
+
+    <<set $dofRandomItemRing to "{$dofNameRandomGeneratorSlot}Ring">>
+    <<set $DofFunctionDiceClear_actor to $dofRandomItemRing>>
+    <<set $DofFunctionDiceClear_actor.$dofPositive    to 50>>
+    <<set $DofFunctionDiceClear_actor.$dofNegative    to 50>>
+    <<hagCallNode name="DofFunctionDiceClear">>
+
+    <<set $dofRandomItemNecklace to "{$dofNameRandomGeneratorSlot}Necklace">>
+    <<set $DofFunctionDiceClear_actor to $dofRandomItemNecklace>>
+    <<set $DofFunctionDiceClear_actor.$dofPositive    to 50>>
+    <<set $DofFunctionDiceClear_actor.$dofNegative    to 50>>
+    <<hagCallNode name="DofFunctionDiceClear">>
+
+    <<set $dofRandomItemTools to "{$dofNameRandomGeneratorSlot}Tools">>
+    <<set $DofFunctionDiceClear_actor to $dofRandomItemTools>>
+    <<set $DofFunctionDiceClear_actor.$dofPositive    to 50>>
+    <<set $DofFunctionDiceClear_actor.$dofNegative    to 50>>
+    <<hagCallNode name="DofFunctionDiceClear">>
+
+    <<set $dofRandomItemBag to "{$dofNameRandomGeneratorSlot}Bag">>
+    <<set $DofFunctionDiceClear_actor to $dofRandomItemBag>>
+    <<set $DofFunctionDiceClear_actor.$dofPositive    to 50>>
+    <<set $DofFunctionDiceClear_actor.$dofNegative    to 50>>
+    <<hagCallNode name="DofFunctionDiceClear">>
+
+    <<set $dofRandomItemScroll to "{$dofNameRandomGeneratorSlot}Scroll">>
+    <<set $DofFunctionDiceClear_actor to $dofRandomItemScroll>>
+    <<set $DofFunctionDiceClear_actor.$dofPositive    to 50>>
+    <<set $DofFunctionDiceClear_actor.$dofNegative    to 50>>
+    <<hagCallNode name="DofFunctionDiceClear">>
+
+    <<set $dofRandomItemWeapon to "{$dofNameRandomGeneratorSlot}Weapon">>
+    <<set $DofFunctionDiceClear_actor to $dofRandomItemWeapon>>
+    <<set $DofFunctionDiceClear_actor.$dofPositive    to 50>>
+    <<set $DofFunctionDiceClear_actor.$dofNegative    to 50>>
+    <<hagCallNode name="DofFunctionDiceClear">>
+
+    <<set $dofRandomItemArmor to "{$dofNameRandomGeneratorSlot}Armor">>
+    <<set $DofFunctionDiceClear_actor to $dofRandomItemWeapon>>
+    <<set $DofFunctionDiceClear_actor.$dofPositive    to 50>>
+    <<set $DofFunctionDiceClear_actor.$dofNegative    to 50>>
+    <<hagCallNode name="DofFunctionDiceClear">>
+===
+

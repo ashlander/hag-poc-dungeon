@@ -22,13 +22,13 @@ title: DofFunctionAddNpcStats
 ---
     // add player stats
     <<hagHighlightBlockSet type=value>>
-    <<hagHighlightBlockNoteAdd text="{$dofTranslateConstitution}"   value=$DofFunctionAddNpcStats_actor.$dofStatConstitution  path="{$dofImageConstitution}">>
-    <<hagHighlightBlockNoteAdd text="{$dofTranslateListen}"         value=$DofFunctionAddNpcStats_actor.$dofStatListen        path="{$dofImageListen}">>
-    <<hagHighlightBlockNoteAdd text="{$dofTranslatePerception}"     value=$DofFunctionAddNpcStats_actor.$dofStatPerception    path="{$dofImagePerception}">>
-    <<hagHighlightBlockNoteAdd text="{$dofTranslateSneak}"          value=$DofFunctionAddNpcStats_actor.$dofStatSneak         path="{$dofImageSneak}">>
-    <<hagHighlightBlockNoteAdd text="{$dofTranslateSpeed}"          value=$DofFunctionAddNpcStats_actor.$dofStatSpeed         path="{$dofImageSpeed}">>
-    <<hagHighlightBlockNoteAdd text="{$dofTranslateAttack}"         value=$DofFunctionAddNpcStats_actor.$dofStatAttack        path="{$dofImageAttack}">>
-    <<hagHighlightBlockNoteAdd text="{$dofTranslateDefense}"        value=$DofFunctionAddNpcStats_actor.$dofStatDefense       path="{$dofImageDefense}">>
+    <<hagHighlightBlockNoteAdd text="{$dofTranslateConstitution}"   value=$_actor.$dofStatConstitution  path="{$dofImageConstitution}">>
+    <<hagHighlightBlockNoteAdd text="{$dofTranslateListen}"         value=$_actor.$dofStatListen        path="{$dofImageListen}">>
+    <<hagHighlightBlockNoteAdd text="{$dofTranslatePerception}"     value=$_actor.$dofStatPerception    path="{$dofImagePerception}">>
+    <<hagHighlightBlockNoteAdd text="{$dofTranslateSneak}"          value=$_actor.$dofStatSneak         path="{$dofImageSneak}">>
+    <<hagHighlightBlockNoteAdd text="{$dofTranslateSpeed}"          value=$_actor.$dofStatSpeed         path="{$dofImageSpeed}">>
+    <<hagHighlightBlockNoteAdd text="{$dofTranslateAttack}"         value=$_actor.$dofStatAttack        path="{$dofImageAttack}">>
+    <<hagHighlightBlockNoteAdd text="{$dofTranslateDefense}"        value=$_actor.$dofStatDefense       path="{$dofImageDefense}">>
 
 ===
 
@@ -189,52 +189,6 @@ title: DofFunctionAddPlayerEquipment
 ===
 
 // Show room map template
-title: DofFunctionAddMapRoomTemplate
----
-    // upper row
-    <<hagHighlightBlockSet type=image>>
-    <<hagHighlightBlockNoteAdd path="{$dofImageLeftTopGround}"      style="room" onclick="Player">>
-
-    <<hagHighlightBlockSet type=image>>
-    <<hagHighlightBlockNoteAdd path="{$dofImageTopGround}"          style="room">>
-
-    <<hagHighlightBlockSet type=image>>
-    <<hagHighlightBlockNoteAdd path="{$dofImageTopDoor}"            style="room" onclick="TopDoor" >>
-
-    <<hagHighlightBlockSet type=image>>
-    <<hagHighlightBlockNoteAdd path="{$dofImageRightTopGround}"     style="room">>
-
-
-    // mid row
-    <<hagHighlightBlockSet type=image>>
-    <<hagHighlightBlockNoteAdd path="{$dofImageLeftDoor}"           style="room" onclick="LeftDoor">>
-
-    <<hagHighlightBlockSet type=image>>
-    <<hagHighlightBlockNoteAdd path="{$dofImageMiddleGround}"        style="room">>
-
-    <<hagHighlightBlockSet type=image>>
-    <<hagHighlightBlockNoteAdd path="{$dofImageMiddleGround}"        style="room" >>
-
-    <<hagHighlightBlockSet type=image>>
-    <<hagHighlightBlockNoteAdd path="{$dofImageRightDoor}"          style="room" onclick="RightDoor">>
-
-
-    // bottom row
-    <<hagHighlightBlockSet type=image>>
-    <<hagHighlightBlockNoteAdd path="{$dofImageLeftBottomGround}"   style="room">>
-
-    <<hagHighlightBlockSet type=image>>
-    <<hagHighlightBlockNoteAdd path="{$dofImageBottomDoor}"         style="room" onclick="BottomDoor">>
-
-    <<hagHighlightBlockSet type=image>>
-    <<hagHighlightBlockNoteAdd path="{$dofImageBottomGround}"       style="room">>
-
-    <<hagHighlightBlockSet type=image>>
-    <<hagHighlightBlockNoteAdd path="{$dofImageRightBottomGround}"  style="room">>
-
-===
-
-// Show room map template
 title: DofFunctionAddMapCorridorTemplate
 ---
     // mid row
@@ -251,3 +205,80 @@ title: DofFunctionAddMapCorridorTemplate
     <<hagHighlightBlockNoteAdd path="{$dofImageRightCorridorDoor}"          style="room" onclick="RightDoor">>
 ===
 
+/**
+ * @brief Reset unit stats to 0
+ * @param DofFunctionResetStats_actor Actor name with stats to reset
+ */
+title: DofFunctionResetStats
+---
+    <<set $_actor.$dofStatConstitution     to 0>>
+    <<set $_actor.$dofStatListen           to 0>>
+    <<set $_actor.$dofStatPerception       to 0>>
+    <<set $_actor.$dofStatSneak            to 0>>
+    <<set $_actor.$dofStatSpeed            to 0>>
+    <<set $_actor.$dofStatAttack           to 0>>
+    <<set $_actor.$dofStatDefense          to 0>>
+===
+
+/**
+ * @brief Populates unit with random stats
+ * previously set stats will not be erased
+ * @param DofFunctionGenerateRandomStats_actor Actor name with stats to populate
+ * expected
+ *  dofStatMax - max stat value
+ *  dofStatMin - min stat value
+ *  dofStatPointsLeft - stat points to distribute
+ */
+title: DofFunctionGenerateRandomStats
+---
+    <<set $dofStatId                to 0>>
+
+    // random point iteration
+    <<while $_actor.$dofStatPointsLeft is not 0>>
+
+        <<set $dofStatId to random($dofStatMinId, $dofStatMaxId)>>
+
+        // Constitution
+        <<if $dofStatId is $dofStatConstitutionId and $_actor.$dofStatConstitution < $_actor.$dofStatMax>>
+            <<set $_actor.$dofStatConstitution to $_actor.$dofStatConstitution + 1>>
+            <<set $_actor.$dofStatPointsLeft to $_actor.$dofStatPointsLeft - 1>>
+        <<endif>>
+
+        // Listen
+        <<if $dofStatId is $dofStatListenId and $_actor.$dofStatListen < $_actor.$dofStatMax>>
+            <<set $_actor.$dofStatListen to $_actor.$dofStatListen + 1>>
+            <<set $_actor.$dofStatPointsLeft to $_actor.$dofStatPointsLeft - 1>>
+        <<endif>>
+
+        // Perception
+        <<if $dofStatId is $dofStatPerceptionId and $_actor.$dofStatPerception < $_actor.$dofStatMax>>
+            <<set $_actor.$dofStatPerception to $_actor.$dofStatPerception + 1>>
+            <<set $_actor.$dofStatPointsLeft to $_actor.$dofStatPointsLeft - 1>>
+        <<endif>>
+
+        // Sneak
+        <<if $dofStatId is $dofStatSneakId and $_actor.$dofStatSneak < $_actor.$dofStatMax>>
+            <<set $_actor.$dofStatSneak to $_actor.$dofStatSneak + 1>>
+            <<set $_actor.$dofStatPointsLeft to $_actor.$dofStatPointsLeft - 1>>
+        <<endif>>
+
+        // Speed
+        <<if $dofStatId is $dofStatSpeedId and $_actor.$dofStatSpeed < $_actor.$dofStatMax>>
+            <<set $_actor.$dofStatSpeed to $_actor.$dofStatSpeed + 1>>
+            <<set $_actor.$dofStatPointsLeft to $_actor.$dofStatPointsLeft - 1>>
+        <<endif>>
+
+        // Attack
+        <<if $dofStatId is $dofStatAttackId and $_actor.$dofStatAttack < $_actor.$dofStatMax>>
+            <<set $_actor.$dofStatAttack to $_actor.$dofStatAttack + 1>>
+            <<set $_actor.$dofStatPointsLeft to $_actor.$dofStatPointsLeft - 1>>
+        <<endif>>
+
+        // Defense
+        <<if $dofStatId is $dofStatDefenseId and $_actor.$dofStatDefense < $_actor.$dofStatMax>>
+            <<set $_actor.$dofStatDefense to $_actor.$dofStatDefense + 1>>
+            <<set $_actor.$dofStatPointsLeft to $_actor.$dofStatPointsLeft - 1>>
+        <<endif>>
+
+    <<endwhile>>
+===
