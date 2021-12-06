@@ -36,15 +36,15 @@ Each corridor leads to a room:
 
 .. image:: doc/event-tutorial/HaG-room-navigation.png
    :align: center
-   :height: 400
-   :width:  400
+   :height: 300
+   :width:  600
 
 Each room leads to a corridor:
 
 .. image:: doc/event-tutorial/HaG-corridor-navigation.png
    :align: center
-   :height: 400
-   :width:  400
+   :height: 300
+   :width:  600
 
 Observe
 =======
@@ -53,8 +53,8 @@ Objects observing relies on **Perception** and **Listen** sense stats. The highe
 
 .. image:: doc/event-tutorial/HaG-door-unlock.png
    :align: center
-   :height: 400
-   :width:  400
+   :height: 300
+   :width:  600
 
 Unlock and Disarm
 =================
@@ -63,8 +63,8 @@ You may encounter traps, locked doors or chests. **Listen** stat is used for aut
 
 .. image:: doc/event-tutorial/HaG-door-unlock-minigame.png
    :align: center
-   :height: 400
-   :width:  400
+   :height: 300
+   :width:  600
 
 Resources
 =========
@@ -80,8 +80,8 @@ For now only tutorial event is added.
 Battle
 ======
 
-Latest Screenshots
-==================
+Latest Gameplay
+===============
 
 +---------------------------------------+---------------------------------------+
 | .. image:: doc/HaG-Dungeon-211014.gif | .. image:: doc/HaG-Dungeon-211112.gif |
