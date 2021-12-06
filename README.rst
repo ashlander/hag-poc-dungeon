@@ -99,6 +99,7 @@ Latest Gameplay
 + Chests with coins to loot
 + Traps
 + Locked chests and doors
++ Unlock/disarm mini game
 
 .. image:: doc/HaG-Dungeon-211202.gif
    :align: center
