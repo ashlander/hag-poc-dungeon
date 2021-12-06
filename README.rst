@@ -93,7 +93,7 @@ Latest Gameplay
 .. image:: doc/HaG-Dungeon-211202.gif
    :align: center
    :height: 400
-   :width:  400
+   :width:  600
 
 If you want to know more, subscribe to HaG framework telegram channel https://t.me/haggamedev, where I will publish some news and updates regarding HaG framework itself and projects on top of it.
 
