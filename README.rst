@@ -90,6 +90,15 @@ Latest Gameplay
 |    :width:  100                       |    :width:  100                       |
 +---------------------------------------+---------------------------------------+
 
++ Languages support (en, uk)
++ Player character generation
++ Save / Load game (save files you should store on your computer/phone)
++ Rooms and Corridors generation
++ Character inventory (empty for now)
++ Chests with coins to loot
++ Traps
++ Locked chests and doors
+
 .. image:: doc/HaG-Dungeon-211202.gif
    :align: center
    :height: 400
