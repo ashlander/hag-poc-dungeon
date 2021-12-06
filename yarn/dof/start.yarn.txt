@@ -2,8 +2,56 @@ title: DofStart
 ---
     <<hagSceneMode show=false>>
     <<hagCallNode name="DofFunctionInitOnStart">>
+    <<hagHistoryClean>>
 
-    [[New Game|DofGameNew]]
-    [[Load Game|DofGameLoad]]
+    [[New Game|DofGameNew]] #line:8cd940
+    [[Load Game|DofGameLoad]] #line:550c5c
+    [[Credits|DofGameCredits]] #line:6a4fd5
+===
+
+title: DofGameCredits
+---
+<<box>>
+    If you would like to report an issue, please create ticket at [raw]<a href="[/raw]https:/[raw][/raw]/github.com/ashlander/hag-poc-dungeon[raw]">Dungeon of Fears on Github</a>[/raw]. #line:b293b2
+    If you would like to follow the progress or know more, subscribe to telegram channel [raw]<a href="[/raw]https:/[raw][/raw]/t.me/haggamedev[raw]">Dungeon of Fears in Telegram</a>[/raw]. #line:e570ca
+<<endbox>>
+
+<<box>>
+    [raw]<a href="[/raw]https:/[raw][/raw]/rgsdev.itch.io/free-isometric-dungeon-game-tileset-2d-asset-by-rgsdev[raw]">Dungeon tiles</a>[/raw] by [u]RGS_Dev[/u] #line:12aabc
+    [raw]<a href="[/raw]https:/[raw][/raw]/opengameart.org/content/isometric-dungeon-tileset[raw]">Character and NPC tiles </a>[/raw] by [u]Dragosha[/u]  under CC BY 4.0 #line:c378d3
+
+    [raw]<a href="[/raw]https:/[raw][/raw]/game-icons.net/[raw]">Icons</a>[/raw] #line:6e2c64
+        {$dofColorValue}*{$dofColorEnd} [u]Hearts[/u] icon by [u]Skoll[/u] under CC BY 3.0 #line:1e8f96
+        {$dofColorValue}*{$dofColorEnd} [u]Human[/u] ear icon by [u]Delapouite[/u] under CC BY 3.0 #line:ba57b0
+        {$dofColorValue}*{$dofColorEnd} [u]Eyeball[/u] icon by [u]Lorc[/u] under CC BY 3.0 #line:816d6d
+        {$dofColorValue}*{$dofColorEnd} [u]Hooded[/u] figure icon by [u]DarkZaitzev[/u] under CC BY 3.0 #line:3aadd3
+        {$dofColorValue}*{$dofColorEnd} [u]Wingfoot[/u] icon by [u]Lorc[/u] under CC BY 3.0 #line:ed60e2
+        {$dofColorValue}*{$dofColorEnd} [u]Biceps[/u] icon by [u]Delapouite[/u] under CC BY 3.0 #line:c512bd
+        {$dofColorValue}*{$dofColorEnd} [u]Bordered[/u] shield icon by [u]Lorc[/u] under CC BY 3.0 #line:802325
+        {$dofColorValue}*{$dofColorEnd} [u]Swap[/u] bag icon by [u]Lorc[/u] under CC BY 3.0 #line:2b68d8
+        {$dofColorValue}*{$dofColorEnd} [u]Gem[/u] pendant icon by [u]Lorc[/u] under CC BY 3.0 #line:72cb9c
+        {$dofColorValue}*{$dofColorEnd} [u]Spartan[/u] helmet icon by [u]Delapouite[/u] under CC BY 3.0 #line:d73340
+        {$dofColorValue}*{$dofColorEnd} [u]Power[/u] ring icon by [u]Delapouite[/u] under CC BY 3.0 #line:4e7aa2
+        {$dofColorValue}*{$dofColorEnd} [u]Gloves[/u] icon by [u]Delapouite[/u] under CC BY 3.0 #line:fd5ddd
+        {$dofColorValue}*{$dofColorEnd} [u]Lamellar[/u] icon by [u]Lorc[/u] under CC BY 3.0 #line:df91b0
+        {$dofColorValue}*{$dofColorEnd} [u]Knapsack[/u] icon by [u]Lorc[/u] under CC BY 3.0 #line:fdd2a3
+        {$dofColorValue}*{$dofColorEnd} [u]Boots[/u] icon by [u]Lorc[/u] under CC BY 3.0 #line:f1dfb5
+        {$dofColorValue}*{$dofColorEnd} [u]Ammonite[/u] iconby [u]Lorc[/u] under CC BY 3.0 #line:8e9097
+        {$dofColorValue}*{$dofColorEnd} [u]Angler fish[/u] iconby [u]Lorc[/u] under CC BY 3.0 #line:aacd62
+        {$dofColorValue}*{$dofColorEnd} [u]Axolotl[/u] iconby [u]Caro Asercion[/u] under CC BY 3.0 #line:15894c
+        {$dofColorValue}*{$dofColorEnd} [u]Bear head[/u] iconby [u]Delapouite[/u] under CC BY 3.0 #line:e06333
+        {$dofColorValue}*{$dofColorEnd} [u]Bee[/u] iconby [u]Lorc[/u] under CC BY 3.0 #line:188cc2
+        {$dofColorValue}*{$dofColorEnd} [u]Bird twitter[/u] iconby [u]Lorc[/u] under CC BY 3.0 #line:ac3c9b
+        {$dofColorValue}*{$dofColorEnd} [u]Camel head[/u] iconby [u]Delapouite[/u] under CC BY 3.0 #line:1f9b86
+        {$dofColorValue}*{$dofColorEnd} [u]Cassowary head[/u] iconby [u]Delapouite[/u] under CC BY 3.0 #line:af14f1
+        {$dofColorValue}*{$dofColorEnd} [u]Charging bull[/u] iconby [u]Delapouite[/u] under CC BY 3.0 #line:482610
+        {$dofColorValue}*{$dofColorEnd} [u]Chicken[/u] iconby [u]Delapouite[/u] under CC BY 3.0 #line:f9d703
+        {$dofColorValue}*{$dofColorEnd} [u]Clownfish[/u] iconby [u]Delapouite[/u] under CC BY 3.0 #line:77abc0
+        {$dofColorValue}*{$dofColorEnd} [u]Dolphin[/u] iconby [u]Delapouite[/u] under CC BY 3.0 #line:500f9b
+        {$dofColorValue}*{$dofColorEnd} [u]Caged bowl[/u] iconby [u]Lorc[/u] under CC BY 3.0 #line:c7d91e
+        {$dofColorValue}*{$dofColorEnd} [u]Circle[/u] iconby [u]Delapouite[/u] under CC BY 3.0 #line:534e0a
+<<endbox>>
+
+    [[Back|DofStart]] #line:994e07
 ===
 

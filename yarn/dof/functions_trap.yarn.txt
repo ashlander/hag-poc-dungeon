@@ -1,0 +1,136 @@
+// Add trap title
+title: DofFunctionAddTrapTitle
+---
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd text="{$dofTranslateTrap}">>
+===
+
+/**
+ * @brief generates random trap loot
+ * @param DofFunctionGenerateRoomTrap_room Room name
+ * expected
+ *  dofX
+ *  dofY
+ * @param DofFunctionGenerateRoomTrap_slot Trap item slot name
+ * @param DofFunctionGenerateRoomTrap_distance Room distance
+ */
+title: DofFunctionGenerateRoomTrap
+---
+    // generate trap parameters
+    <<set $_trap to "{$_room}{$_slot}">>
+    <<set $_trap.$dofStatMin to $dofPlayer.dofStatMin>>
+    <<set $_trap.$dofStatMax to $dofPlayer.dofStatMax>>
+    <<set $_trap.$dofStatPointsLeft to ($dofNpc.dofStatPointsLeft + ($_distance / $dofNpc.dofStatDistancePerPointsLeft))>>
+    <<set $_trap.$dofLink to "dofItemTrapArmed">>
+    <<set $_trap.$dofArmed to true>>
+    <<set $_trap.$dofContainer to true>>
+
+    <<set $DofFunctionInitNewNpcStats_actor to "{$_trap}">>
+    <<hagCallNode name="DofFunctionInitNewNpcStats">>
+    <<set $DofFunctionGenerateNpcRandomStats_actor to "{$_trap}">>
+    <<hagCallNode name="DofFunctionGenerateNpcRandomStats">>
+
+    // generate stats visibility
+    <<set $DofFunctionGenerateNpcVisibility_observer to "dofPlayer">>
+    <<set $DofFunctionGenerateNpcVisibility_actor    to "{$_trap}">>
+    <<hagCallNode name="DofFunctionGenerateNpcVisibility">>
+
+    // TODO if DEBUG
+    //<<set $DofFunctionDebugStats_actor to "{$_trap}">>
+    //<<hagCallNode name="DofFunctionDebugStats">>
+
+    // generate loot
+    <<set $_loot to 0>>
+    <<set $_lootName to "">>
+    <<set $_prevLootName to "">>
+    <<set $_lootNum to random(1,$dofRoomTrapMaxLoot)>>
+    <<while $_loot < $_lootNum>>
+        // generate item
+        <<set $_lootName to "{$_room}{$_slot}{$_loot}">>
+        <<set $DofFunctionGenerateRoomTrapItem_trapSlot to $_lootName>>
+        <<set $DofFunctionGenerateRoomTrapItem_distance to $_distance>>
+        <<hagCallNode name="DofFunctionGenerateRoomTrapItem">>
+
+        // make link with previous
+        <<if $_loot > 0>>
+            <<set $_prevLootName.$dofNext to $_lootName>>
+        <<endif>>
+
+        // iterate
+        <<set $_prevLootName to $_lootName>>
+        <<set $_loot to $_loot+1>>
+    <<endwhile>>
+
+    <<set $_prevLootName.$dofNext to "">> // clear next link, because there may be leftovers
+===
+
+/**
+ * @brief generates random trap loot
+ * @param DofFunctionGenerateRoomTrapItem_trapSlot Trap loot slot name
+ * @param DofFunctionGenerateRoomTrapItem_distance Room distance
+ */
+title: DofFunctionGenerateRoomTrapItem
+---
+    // clear previous actor in order to remove garbage
+    <<hagActorRemove name="{$_trapSlot}">>
+
+    // generate some item
+    <<set $_found to false>>
+    <<while not $_found>>
+        <<set $_index to random($dofItemMinId, $dofItemMaxId)>>
+
+        <<if $_index is $dofItemMoneyId>> // money
+            <<set $DofFunctionDiceRoll_actor to $dofRandomItemMoney>>
+            <<hagCallNode name="DofFunctionDiceRoll">>
+            <<if $dofRandomItemMoney.$dofRollPositive>>
+                <<set $DofFunctionGenerateContainerItemMoney_slot to $_trapSlot>>
+                <<set $DofFunctionGenerateContainerItemMoney_distance to $_distance>>
+                <<hagCallNode name="DofFunctionGenerateContainerItemMoney">>
+                <<set $_found to true>>
+            <<endif>>
+        // TODO necklace
+        // TODO ring
+        <<endif>>
+
+    <<endwhile>>
+===
+
+/**
+ * @brief Add room trap items
+ * @param DofFunctionAddRoomTrapItems_room Room name
+ */
+title: DofFunctionAddRoomTrapItems
+---
+    <<set $DofFunctionAddContainerItems_max to $dofRoomTrapMaxLoot>>
+    <<set $DofFunctionAddContainerItems_slot to "{$_room}{$dofNameTrapItemSlot}0">>
+    <<hagCallNode name="DofFunctionAddContainerItems">>
+===
+
+/**
+ * @brief Add room trap items
+ * @param DofFunctionCheckRoomTrapEmpty_room Room name
+ * @return DofFunctionCheckRoomTrapEmpty_empty If container is empty
+ */
+title: DofFunctionCheckRoomTrapEmpty
+---
+    <<set $DofFunctionCheckContainerEmpty_slot to "{$_room}{$dofNameTrapItemSlot}0">>
+    <<hagCallNode name="DofFunctionCheckContainerEmpty">>
+    <<set $_empty to $DofFunctionCheckContainerEmpty_empty>>
+===
+
+/**
+ * @brief Result of hitting the player with trap
+ * @param DofFunctionHitPlayerWithTrap_room Room name
+ * @return DofFunctionHitPlayerWithTrap_damage Damage dealt
+ */
+title: DofFunctionHitPlayerWithTrap
+---
+    <<set $_trap to "{$_room}{$dofNameTrapItemSlot}">>
+    <<set $_damage to (($_trap.$dofStatAttack + $_trap.$dofStatSpeed - $dofPlayer.dofStatDefense) * 3) >> // TODO move to constants
+    <<if $_damage > 0>>
+        <<set $dofPlayer.dofHP to $dofPlayer.dofHP - $_damage>>
+    <<endif>>
+
+    // TODO damage worn items durability
+===
+

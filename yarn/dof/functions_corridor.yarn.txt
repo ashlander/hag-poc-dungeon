@@ -1,0 +1,227 @@
+// constants
+title: DofFunctionInitCorridorConstants
+---
+===
+
+/**
+ * @brief generates random corridor
+ * @param DofFunctionGenerateCorridor_corridor Corridor name
+ * expected
+ *  dofX
+ *  dofY
+ */
+title: DofFunctionGenerateCorridor
+---
+    // clear previous corridor actor in order to remove garbage
+    <<hagActorRemove name="($_corridor)">>
+
+    // calculate corridor distance
+    <<set $_absX to abs($_corridor.$dofX)>>
+    <<set $_absY to abs($_corridor.$dofY)>>
+    <<set $_entranceDistance to sqrt($_absX*$_absX + $_absY*$_absY)>>
+    <<if $_entranceDistance <= 0>>
+        <<set $_entranceDistance to 1>>
+    <<endif>>
+
+    // generate right door stats
+    <<set $_door to "{$_corridor}{$dofNameDoorItemSlot}">>
+    <<set $_door.$dofStatMin to $dofPlayer.dofStatMin>>
+    <<set $_door.$dofStatMax to $dofPlayer.dofStatMax>>
+    <<set $_door.$dofStatPointsLeft to ($dofNpc.dofStatPointsLeft + ($_entranceDistance / $dofNpc.dofStatDistancePerPointsLeft))>>
+
+    <<set $DofFunctionInitNewNpcStats_actor to "{$_door}">>
+    <<hagCallNode name="DofFunctionInitNewNpcStats">>
+    <<set $DofFunctionGenerateNpcRandomStats_actor to "{$_door}">>
+    <<hagCallNode name="DofFunctionGenerateNpcRandomStats">>
+
+    // generate door stats visibility
+    <<set $DofFunctionGenerateNpcVisibility_observer to "dofPlayer">>
+    <<set $DofFunctionGenerateNpcVisibility_actor    to "{$_door}">>
+    <<hagCallNode name="DofFunctionGenerateNpcVisibility">>
+
+    // discover if right door is locked
+    <<set $DofFunctionDiceRoll_actor to $dofRandomCorridorLocked>>
+    <<hagCallNode name="DofFunctionDiceRoll">>
+    <<if $dofRandomCorridorLocked.$dofRollPositive>>
+        <<set $_door.$dofLink to "dofItemRightDoorLocked">>
+        <<set $_door.$dofLocked to true>>
+    <<else>>
+        <<set $_door.$dofLink to "dofItemRightDoor">>
+        <<set $_door.$dofLocked to false>>
+    <<endif>>
+
+// TODO remake into function
+//<<box>>
+//    DEBUG: Positive {$dofRandomCorridorLocked.$dofRoll} => {$dofRandomCorridorLocked.$dofRollPositive} 
+//    DEBUG: PositiveNum {$dofRandomCorridorLocked.$dofPositiveNum} / {$dofRandomCorridorLocked.$dofNegativeNum} NegativeNum
+//    DEBUG: PositiveChance {$dofRandomCorridorLocked.$dofPositive} / {$dofRandomCorridorLocked.$dofNegative} NegativeChance
+//    DEBUG: PositiveBoost {$dofRandomCorridorLocked.$dofPositiveBoost} / {$dofRandomCorridorLocked.$dofNegativeBoost} NegativeBoost
+//<<endbox>>
+
+    // control number of objects
+    <<set $_objectsCount to 0>>
+
+    // generate trap
+    <<set $DofFunctionDiceRoll_actor to $dofRandomCorridorTrap>>
+    <<hagCallNode name="DofFunctionDiceRoll">>
+    <<if $dofRandomCorridorTrap.$dofRollPositive>>
+        // generate content
+        <<set $DofFunctionGenerateRoomTrap_room to $_corridor>>
+        <<set $DofFunctionGenerateRoomTrap_slot to "{$dofNameTrapItemSlot}">>
+        <<set $DofFunctionGenerateRoomTrap_distance to $_entranceDistance>>
+        <<hagCallNode name="DofFunctionGenerateRoomTrap">>
+
+        <<set $_corridor.$dofHasTrap to true>>
+        <<set $_objectsCount to $_objectsCount + 1>>
+    <<endif>>
+
+    // generate corridor areas
+    <<set $DofFunctionGenerateCorridorAreas_corridor to $_corridor>>
+    <<hagCallNode name="DofFunctionGenerateCorridorAreas">>
+===
+
+/**
+ * @brief generates corridor areas
+ * @param DofFunctionGenerateCorridorAreas_corridor Corridor name
+ */
+title: DofFunctionGenerateCorridorAreas
+---
+    // initialize free areas
+    <<set $_index to $dofCorridorAreaMinId>>
+    <<while $_index <= $dofCorridorAreaMaxId>>
+        <<set $_area to "{$_corridor}{$dofNameCorridorArea}{$_index}">>
+        <<hagActorRemove name="{$_area}">> // clean up
+        <<set $_area.$dofFree to true>>
+        <<set $_index to $_index + 1>>
+    <<endwhile>>
+
+    // put trap
+    <<if $_corridor.$dofHasTrap>>
+        <<set $DofFunctionGetCorridorFreeArea_corridor to $_corridor>>
+        <<hagCallNode name="DofFunctionGetCorridorFreeArea">>
+        <<if $DofFunctionGetCorridorFreeArea_found>>
+            <<set $_area to "{$_corridor}{$dofNameCorridorArea}{$DofFunctionGetCorridorFreeArea_index}">>
+            <<set $_area.$dofFree to false>>
+            <<set $_area.$dofHasTrap to true>>
+        <<endif>>
+    <<endif>>
+===
+
+/**
+ * @brief generates some amount of money
+ * @param DofFunctionGetCorridorFreeArea_corridor Corridor name
+ * @return DofFunctionGetCorridorFreeArea_index Free corridor index
+ * @return DofFunctionGetCorridorFreeArea_found Index is valid free area
+ */
+title: DofFunctionGetCorridorFreeArea
+---
+    <<set $_loopNum to 0>> // to avoid endless loop when no free area
+    <<set $_found to false>>
+    <<while not $_found and $_loopNum < 10*$dofCorridorAreaMaxId>>
+        <<set $_index to random($dofCorridorAreaMinId, $dofCorridorAreaMaxId)>>
+        // exclude player
+        <<if $_index is not $dofCorridorAreaLMMId>>
+            // exclude doors
+            <<if $_index is not $dofCorridorAreaRMId and $_index is not $dofCorridorAreaLMId>>
+                // exclude not free
+                <<set $_area to "{$_corridor}{$dofNameCorridorArea}{$_index}">>
+                <<if $_area.$dofFree>>
+                    <<set $_found to true>>
+                <<endif>>
+            <<endif>>
+        <<endif>>
+
+        <<set $_loopNum to $_loopNum + 1>>
+    <<endwhile>>
+===
+
+/**
+ * @brief Add corridor view based on generated values
+ * @param DofFunctionAddMapCorridor_corridor Corridor name
+ * @param DofFunctionAddMapCorridor_readonly With no onclick filled
+ */
+title: DofFunctionAddMapCorridor_Params
+---
+    <<set $DofFunctionAddMapCorridor_corridor to "">>
+    <<set $DofFunctionAddMapCorridor_readonly to false>>
+===
+title: DofFunctionAddMapCorridor
+---
+    <<set $DofFunctionAddMapCorridorArea_corridor to $_corridor>>
+
+    // make dynamic areas to show in the same mode
+    <<set $DofFunctionAddMapCorridorArea_readonly to $_readonly>>
+
+    // mid row
+    <<hagHighlightBlockSet type=image>>
+    <<if $_readonly>>
+        <<hagHighlightBlockNoteAdd path="{$dofImageLeftCorridorDoor}"                   style="room">>
+    <<else>>
+        <<hagHighlightBlockNoteAdd path="{$dofImageLeftCorridorDoor}"                   style="room" onclick="LeftDoor">>
+    <<endif>>
+
+    <<set $DofFunctionAddMapCorridorArea_area to "{$_corridor}{$dofNameCorridorArea}{$dofCorridorAreaLMMId}">>
+    <<set $DofFunctionAddMapCorridorArea_area.$dofHasPlayer to true>> // player character here
+    <<set $DofFunctionAddMapCorridorArea_path to "{$dofImageMiddleCorridorGround}">>
+    <<hagCallNode name="DofFunctionAddMapCorridorArea">>
+
+    <<set $DofFunctionAddMapCorridorArea_area to "{$_corridor}{$dofNameCorridorArea}{$dofCorridorAreaRMMId}">>
+    <<set $DofFunctionAddMapCorridorArea_path to "{$dofImageMiddleCorridorGround}">>
+    <<hagCallNode name="DofFunctionAddMapCorridorArea">> // TODO implement
+
+    <<hagHighlightBlockSet type=image>>
+    <<if $_readonly>>
+        <<hagHighlightBlockNoteAdd path="{$dofImageRightCorridorDoor}"                  style="room">>
+    <<else>>
+        <<hagHighlightBlockNoteAdd path="{$dofImageRightCorridorDoor}"                  style="room" onclick="RightDoor">>
+    <<endif>>
+===
+
+/**
+ * @brief Add area view based on generated values
+ * @param DofFunctionAddMapCorridorArea_corridor Corridor name
+ * @param DofFunctionAddMapCorridorArea_area Corridor area name
+ * @param DofFunctionAddMapCorridorArea_path Path to ground image
+ * @param DofFunctionAddMapCorridorArea_readonly no onclick filled
+ */
+title: DofFunctionAddMapCorridorArea
+---
+    <<set $_generated to $_path>>
+    <<set $_onclick to "">>
+
+    <<if $_area.$dofHasPlayer>> // player
+        <<set $_generated to "{$_path}+player.generated.png">>
+        <<hagImage check_missing path="{$_generated}" init path="{$_path}" add path="{$dofImageCommonPlayer}" dst-pdx=15 dst-pdy=28 save path="{$_generated}">>
+        <<set $_onclick to "Player">>
+
+    <<elseif $_area.$dofHasTrap>> // trap
+        <<set $_trap to "{$_corridor}{$dofNameTrapItemSlot}">>
+        <<if $_trap.$dofStatSneak <= $dofPlayer.dofStatPerception>>
+            <<if $_trap.$dofArmed>>
+                <<set $_generated to "{$_path}+traparmed.generated.png">>
+                <<hagImage check_missing path="{$_generated}" init path="{$_path}" add path="{$dofImageTrapArmed}" dst-pdx=0 dst-pdy=-56 add path="{$dofImageTrapArmed}" dst-pdx=0 dst-pdy=-41 add path="{$dofImageTrapArmed}" dst-pdx=0 dst-pdy=-26 add path="{$dofImageTrapArmed}" dst-pdx=0 dst-pdy=-11 add path="{$dofImageTrapArmed}" dst-pdx=0 dst-pdy=4 save path="{$_generated}">>
+                <<set $_onclick to "TrapArmed">>
+            <<else>>
+                <<set $_generated to "{$_path}+trapdisarmed.generated.png">>
+                <<hagImage check_missing path="{$_generated}"  init path="{$_path}" add path="{$dofImageTrapWorked}" dst-pdx=0 dst-pdy=-56 add path="{$dofImageTrapWorked}" dst-pdx=0 dst-pdy=-41 add path="{$dofImageTrapWorked}" dst-pdx=0 dst-pdy=-26 add path="{$dofImageTrapWorked}" dst-pdx=0 dst-pdy=-11 add path="{$dofImageTrapWorked}" dst-pdx=0 dst-pdy=4 save path="{$_generated}">>
+
+                // if empty - not clickable
+                <<set $DofFunctionCheckRoomTrapEmpty_room to $_corridor>>
+                <<hagCallNode name="DofFunctionCheckRoomTrapEmpty">>
+                <<if not $DofFunctionCheckRoomTrapEmpty_empty and $_trap.$dofContainer>>
+                    <<set $_onclick to "TrapDisarmed">>
+                <<else>>
+                <<endif>>
+            <<endif>>
+
+        <<endif>>
+    <<endif>>
+
+    <<hagHighlightBlockSet type=image>>
+    <<if not $_readonly and $_onclick is not "">>
+        <<hagHighlightBlockNoteAdd path="{$_generated}" style="room" onclick="{$_onclick}">>
+    <<else>>
+        <<hagHighlightBlockNoteAdd path="{$_generated}" style="room">>
+    <<endif>>
+===
+

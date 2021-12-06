@@ -1,7 +1,7 @@
 title: DofGameNew
 ---
-    [[Create New Character|DofGameNewCharacter]]
-    [[Back|DofStart]]
+    [[Create New Character|DofGameNewCharacter]] #line:e0425f
+    [[Back|DofStart]] #line:479dbe
 ===
 
 title: DofGameNewCharacter
@@ -12,8 +12,8 @@ title: DofGameNewCharacter
     <<hagCallNode name="DofFunctionAddPlayerStatsWithPoints">>
     <<hagHighlightBlocksShow center=true>>
 
-    [[Random Stats|DofGameNewCharacterRandom]]
-    [[Manual Stats|DofGameNewCharacterManual]]
+    [[Random Stats|DofGameNewCharacterRandom]] #line:4bb4e6
+    [[Manual Stats|DofGameNewCharacterManual]] #line:b4495f
 ===
 
 title: DofGameNewCharacterManual
@@ -40,15 +40,15 @@ title: DofGameNewCharacterManual
         <<set $DofFunctionNewCharacterManualStat_current to 0>> // TODO tmp
         <<if $dofResult is "Back">>
             <<if $dofPlayer.dofStatPointsLeft is 0>>
-                [[Ride to Dungeon|DofGameNewStarted]]
+                [[Ride to Dungeon|DofGameNewStarted]] #line:bf8a5a
             <<endif>>
-            [[Continue with Points|DofGameNewCharacterManual]]
-            [[Discard Character|DofGameNewCharacter]]
+            [[Continue with Points|DofGameNewCharacterManual]] #line:c73378
+            [[Discard Character|DofGameNewCharacter]] #line:512a9f
             <<stop>> // exit node
         <<elseif $dofResult is "Dungeon">>
-            [[Ride to Dungeon|DofGameNewStarted]]
-            [[Continue with Points|DofGameNewCharacterManual]]
-            [[Discard Character|DofGameNewCharacter]]
+            [[Ride to Dungeon|DofGameNewStarted]] #line:d66504
+            [[Continue with Points|DofGameNewCharacterManual]] #line:5c237f
+            [[Discard Character|DofGameNewCharacter]] #line:297192
             <<stop>> // exit node
         <<elseif $dofResult is not "">>
 
@@ -127,10 +127,10 @@ title: DofFunctionNewCharacterManualStat
 
         // image + description
         <<hagHighlightBlockSet type=image>>
-        <<hagHighlightBlockNoteAdd path="{$DofFunctionNewCharacterManualStat_image}">>
+        <<hagHighlightBlockNoteAdd path="{$_image}">>
 
         <<hagHighlightBlockSet type=info>>
-        <<hagHighlightBlockNoteAdd text="{$DofFunctionNewCharacterManualStat_description}">> #line:skip
+        <<hagHighlightBlockNoteAdd text="{$_description}">> #line:skip
 
         <<hagCallNode name="DofFunctionAddEmptyBlock">>
 
@@ -149,18 +149,18 @@ title: DofFunctionNewCharacterManualStat
         <<set $dofResult to result("")>>
         <<if $dofResult is "Back">>
             <<stop>>
-        <<elseif $dofResult is "+" and $DofFunctionNewCharacterManualStat_current < $DofFunctionNewCharacterManualStat_max>>
-            <<set $DofFunctionNewCharacterManualStat_current to $DofFunctionNewCharacterManualStat_current + 1>>
-            <<set $DofFunctionNewCharacterManualStat_actor.$dofStatPointsLeft to $DofFunctionNewCharacterManualStat_actor.$dofStatPointsLeft - 1>>
-        <<elseif $dofResult is "-" and $DofFunctionNewCharacterManualStat_current > $DofFunctionNewCharacterManualStat_min>>
-            <<set $DofFunctionNewCharacterManualStat_current to $DofFunctionNewCharacterManualStat_current - 1>>
-            <<set $DofFunctionNewCharacterManualStat_actor.$dofStatPointsLeft to $DofFunctionNewCharacterManualStat_actor.$dofStatPointsLeft + 1>>
+        <<elseif $dofResult is "+" and $_current < $_max>>
+            <<set $_current to $_current + 1>>
+            <<set $_actor.$dofStatPointsLeft to $_actor.$dofStatPointsLeft - 1>>
+        <<elseif $dofResult is "-" and $_current > $_min>>
+            <<set $_current to $_current - 1>>
+            <<set $_actor.$dofStatPointsLeft to $_actor.$dofStatPointsLeft + 1>>
         <<endif>>
 
         // change actor which will be displayed
-        <<set $DofFunctionNpcStatConstitutionChange_actor to $DofFunctionNewCharacterManualStat_actor>>
-        <<set $DofFunctionNpcStatConstitutionChange_value to $DofFunctionNewCharacterManualStat_current>>
-        <<hagCallNode name="{$DofFunctionNewCharacterManualStat_func}">>
+        <<set $DofFunctionNpcStatConstitutionChange_actor to $_actor>>
+        <<set $DofFunctionNpcStatConstitutionChange_value to $_current>>
+        <<hagCallNode name="{$_func}">>
     <<endwhile>>
 ===
 
@@ -253,8 +253,8 @@ title: DofGameNewCharacterRandom
     <<hagCallNode name="DofFunctionInitNewPlayerStats">>
 
     // random distribution
-    <<set $DofFunctionGenerateRandomStats_actor to "dofPlayer">>
-    <<hagCallNode name="DofFunctionGenerateRandomStats">>
+    <<set $DofFunctionGenerateNpcRandomStats_actor to "dofPlayer">>
+    <<hagCallNode name="DofFunctionGenerateNpcRandomStats">>
 
     // show stats
     <<hagHistoryClean>>
@@ -263,17 +263,17 @@ title: DofGameNewCharacterRandom
 
     // go to dungeon
     <<if $dofPlayer.dofStatPointsLeft is 0>>
-        [[Ride to Dungeon|DofGameNewStarted]]
+        [[Ride to Dungeon|DofGameNewStarted]] #line:841515
     <<endif>>
-    [[Back|DofGameNewCharacter]]
+    [[Back|DofGameNewCharacter]] #line:46bf49
 ===
 
 title: DofGameNewStarted
 ---
     // initialize new game parameters
     <<hagCallNode name="DofFunctionInitDices">>
-    <<set $dofPlayer to "Player">>
-    <<set $dofPlayer.$dofRunNum to 0>>
+    <<set $dofPlayer.dofRunNum to 0>>
+    <<set $dofPlayer.dofHP to $dofPlayer.dofStatConstitution * $dofHPperConstitution>>
 
     [[DofGameDungeonEntrance]]
 ===

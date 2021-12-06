@@ -1,0 +1,114 @@
+/**
+ * @brief Start find twin mini game
+ * @param DofFunctionMinigameTwinFind_rows Number of rows, min 1, max 6
+ * @param DofFunctionMinigameTwinFind_expected Number of pairs expected to finish, 0 - all
+ * @param DofFunctionMinigameTwinFind_lock Number cards to lock each step, random not exposed card will be locked, 0 - disable locking
+ * @return DofFunctionMinigameTwinFind_pairs Number of pairs actually found
+ * @return DofFunctionMinigameTwinFind_steps Steps spent
+ */
+title: DofFunctionMinigameTwinFind_Params
+---
+    <<set $DofFunctionMinigameTwinFind_rows to 0>>
+    <<set $DofFunctionMinigameTwinFind_expected to 0>>
+    <<set $DofFunctionMinigameTwinFind_lock to 0>>
+===
+title: DofFunctionMinigameTwinFind
+---
+    // Initialization
+    <<hagCallNode name="DofFunctionMinigameTwinFindInit">>
+
+    // first time instructions
+    <<if not visited("DofFunctionMinigameTwinFind")>>
+        <<if $_lock > 0>>
+            In order to win you should find {$_expected} pairs of images. Each turn some cards will be blocked, making it harder with each step. #line:34862d
+        <<else>>
+            In order to win you should find {$_expected} pairs of images. #line:a33c5a
+        <<endif>>
+
+        // Initialize all images to speed things up
+        <<hagCallNode name="DofFunctionMinigameTwinFindShowImages">>
+
+        -> Press when you will see all the images #line:a122f8
+
+    <<endif>>
+
+    // Set field dimensions
+    <<set $dofMGTFRows to $_rows>>
+
+    // Generate field with twins
+    <<hagCallNode name="DofFunctionMinigameTwinFindInitFields">>
+
+    // Expose all twins
+    <<hagCallNode name="DofFunctionMinigameTwinFindShowExposedFields">>
+
+    // Wait
+    <<set $_wait to $dofMGTFRows*0.5>>
+    <<wait $_wait>>
+
+    <<set $dofMGTFTwinField1Index to 0>>
+    <<set $dofMGTFTwinField2Index to 0>>
+    <<set $dofMGTFTwinFieldsFound to 0>>
+    <<set $_step to 0>> // start step
+    <<set $_blocked to 0>> // number of cards blocked
+
+    <<hagHistoryClean>>
+
+    // until all/expected twins found - play
+    <<while (($dofMGTFTwinFieldsFound + $_blocked) <= $dofMGTFFieldsNum-2) and ($_expected <= 0 or $dofMGTFTwinFieldsFound < 2*$_expected)>>
+        // Show hidden twins except for exposed
+        <<hagCallNode name="DofFunctionMinigameTwinFindShowFields">>
+
+        // Expose chosen one
+        <<set $dofMGTFTwinField1Index to $dofMGTFTwinFieldResult>>
+        <<set $_field1 to "{$dofMGTFFieldName}{$dofMGTFTwinField1Index}">>
+        <<set $_field1.$dofExposed to true>>
+
+        // Show hidden twins except for exposed
+        <<hagCallNode name="DofFunctionMinigameTwinFindShowFields">>
+
+        // Expose chosen one
+        <<set $dofMGTFTwinField2Index to $dofMGTFTwinFieldResult>>
+        <<set $_field2 to "{$dofMGTFFieldName}{$dofMGTFTwinField2Index}">>
+        <<set $_field2.$dofExposed to true>>
+
+        // check if identical
+        <<if $_field1.$dofPath is $_field2.$dofPath>>
+            // iterate progress
+            <<set $dofMGTFTwinFieldsFound to $dofMGTFTwinFieldsFound+2>>
+        <<else>>
+            // Show hidden twins except for exposed without click possibility
+            <<hagCallNode name="DofFunctionMinigameTwinFindShowStaticFields">>
+
+            // Wait
+            <<wait 0.5>>
+
+            // hide if not
+            <<set $_field1.$dofExposed to false>>
+            <<set $_field2.$dofExposed to false>>
+        <<endif>>
+
+        // lock cards to make harder
+        <<if $_lock > 0>>
+            <<set $_locked to 0>>
+            <<while ($_locked < $_lock) and ($dofMGTFFieldsNum - $dofMGTFTwinFieldsFound - $_blocked >= 1)>>
+                <<hagRandom min=1 max=$dofMGTFFieldsNum>>
+                <<set $_fieldIndex to result(0)>>
+                <<set $_field to "{$dofMGTFFieldName}{$_fieldIndex}">>
+                <<if not $_field.$dofExposed and not $_field.$dofLocked>>
+                    <<set $_field.$dofLocked to true>>
+                    <<set $_locked to $_locked+1>>
+                    <<set $_blocked to $_blocked+1>>
+                <<endif>>
+            <<endwhile>>
+        <<endif>>
+
+        // iterate step
+        <<set $_step to $_step+1>>
+    <<endwhile>>
+
+    // Show hidden twins except for exposed without click possibility
+    <<hagCallNode name="DofFunctionMinigameTwinFindShowStaticFields">>
+
+    // prepare results
+    <<set $_pairs to $dofMGTFTwinFieldsFound / 2>>
+===

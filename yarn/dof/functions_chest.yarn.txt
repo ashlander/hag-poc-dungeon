@@ -1,0 +1,105 @@
+// Add chest title
+title: DofFunctionAddChestTitle
+---
+    <<hagHighlightBlockSet type=image>>
+    <<hagHighlightBlockNoteAdd text="{$dofTranslateChest}">>
+===
+
+/**
+ * @brief generates random chest loot
+ * @param DofFunctionGenerateRoomChest_room Room name
+ * @param DofFunctionGenerateRoomChest_slot Chest item slot name
+ * @param DofFunctionGenerateRoomChest_distance Room distance
+ */
+title: DofFunctionGenerateRoomChest
+---
+    // generate chest parameters
+    <<set $_chest to "{$_room}{$_slot}">>
+    <<set $_chest.$dofStatMin to $dofPlayer.dofStatMin>>
+    <<set $_chest.$dofStatMax to $dofPlayer.dofStatMax>>
+    <<set $_chest.$dofStatPointsLeft to ($dofNpc.dofStatPointsLeft + ($_distance / $dofNpc.dofStatDistancePerPointsLeft))>>
+
+    <<set $DofFunctionInitNewNpcStats_actor to "{$_chest}">>
+    <<hagCallNode name="DofFunctionInitNewNpcStats">>
+    <<set $DofFunctionGenerateNpcRandomStats_actor to "{$_chest}">>
+    <<hagCallNode name="DofFunctionGenerateNpcRandomStats">>
+
+    // generate stats visibility
+    <<set $DofFunctionGenerateNpcVisibility_observer to "dofPlayer">>
+    <<set $DofFunctionGenerateNpcVisibility_actor    to "{$_chest}">>
+    <<hagCallNode name="DofFunctionGenerateNpcVisibility">>
+
+    // detect if it locked/unlocked/smashed
+    <<hagRandom min=1 max=3>>
+    <<set $_type to result(1)>>
+    <<if $_type is 1>>
+        <<set $_chest.$dofLink to "dofItemChestLocked">>
+        <<set $_chest.$dofLocked to true>> // locked
+        <<set $_chest.$dofSmashed to false>> // but not smashed
+    <<elseif $_type is 2>>
+        <<set $_chest.$dofLink to "dofItemChest">>
+        <<set $_chest.$dofLocked to false>> // unlocked
+        <<set $_chest.$dofSmashed to false>> // not smashed
+    <<elseif $_type is 3>>
+        <<set $_chest.$dofLink to "dofItemChestSmashed">>
+        <<set $_chest.$dofLocked to false>> // unlocked
+        <<set $_chest.$dofSmashed to true>> // but smashed
+    <<endif>>
+
+    // TODO if DEBUG
+    //<<set $DofFunctionDebugStats_actor to "{$_chest}">>
+    //<<hagCallNode name="DofFunctionDebugStats">>
+
+    // generate loot
+    <<set $_loot to 0>>
+    <<set $_lootName to "">>
+    <<set $_prevLootName to "">>
+    <<set $_lootNum to random(1,$dofRoomChestMaxLoot)>>
+    <<while $_loot < $_lootNum>>
+        // generate item
+        <<set $_lootName to "{$_room}{$_slot}{$_loot}">>
+        <<set $DofFunctionGenerateRoomChestItem_chestSlot to $_lootName>>
+        <<set $DofFunctionGenerateRoomChestItem_distance to $_distance>>
+        <<hagCallNode name="DofFunctionGenerateRoomChestItem">>
+
+        // make link with previous
+        <<if $_loot > 0>>
+            <<set $_prevLootName.$dofNext to $_lootName>>
+        <<endif>>
+
+        // iterate
+        <<set $_prevLootName to $_lootName>>
+        <<set $_loot to $_loot+1>>
+    <<endwhile>>
+
+    <<set $_prevLootName.$dofNext to "">> // clear next link, because there may be leftovers
+===
+
+/**
+ * @brief generates random chest loot
+ * @param DofFunctionGenerateRoomChestItem_chestSlot Chest loot slot name
+ * @param DofFunctionGenerateRoomChestItem_distance Room distance
+ */
+title: DofFunctionGenerateRoomChestItem
+---
+    // clear previous actor in order to remove garbage
+    <<hagActorRemove name="{$_chestSlot}">>
+
+    // generate some item
+    <<set $_found to false>>
+    <<while not $_found>>
+        <<set $_index to random($dofItemMinId, $dofItemMaxId)>>
+
+        <<if $_index is $dofItemMoneyId>> // money
+            <<set $DofFunctionDiceRoll_actor to $dofRandomItemMoney>>
+            <<hagCallNode name="DofFunctionDiceRoll">>
+            <<if $dofRandomItemMoney.$dofRollPositive>>
+                <<set $DofFunctionGenerateContainerItemMoney_slot to $_chestSlot>>
+                <<set $DofFunctionGenerateContainerItemMoney_distance to $_distance>>
+                <<hagCallNode name="DofFunctionGenerateContainerItemMoney">>
+                <<set $_found to true>>
+            <<endif>>
+        <<endif>>
+
+    <<endwhile>>
+===

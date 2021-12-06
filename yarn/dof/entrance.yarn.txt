@@ -8,16 +8,27 @@ title: DofGameDungeonEntrance
     <<set $dofPlayer.dofOrientation         to "YPositive">>
     <<set $dofPlayer.dofNextOrientation     to "YPositive">>
 
+    // regenerate player HP
+    <<set $dofPlayer.dofHP to $dofPlayer.dofStatConstitution * $dofHPperConstitution>>
+
     // TODO You see traders here
+    <<hagHistoryClean>>
 
     // [[Talk to trader|Game.Dungeon.Entrance.Trader]]
-    [[Go inside dungeon|DofGameDungeonRun]]
-    [[Save Game|DofGameSave]]
+    [[Go inside dungeon|DofGameDungeonRun]] #line:7d4337
+    [[Save Game|DofGameSave]] #line:35cd83
 ===
 
 title: DofGameDungeonRun
 ---
-    <<set $dofPlayer.$dofRunNum to $dofPlayer.$dofRunNum+1>>
+    //***************************************************************************/
+    // tutorial event
+    <<if not visited("DofTutorialNavigationStart")>>
+        <<hagCallNode name="DofTutorialNavigationStart">>
+    <<endif>>
+    //***************************************************************************/
+
+    <<set $dofPlayer.dofRunNum to $dofPlayer.dofRunNum+1>>
 
     [[DofGameDungeonRoom]]
 ===

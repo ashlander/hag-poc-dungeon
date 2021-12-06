@@ -2,6 +2,7 @@
 title: DofFunctionInitRoomConstants
 ---
     <<set $dofRoomChestMaxLoot to 4>>
+    <<set $dofRoomTrapMaxLoot  to 1>>
 ===
 
 /**
@@ -20,6 +21,9 @@ title: DofFunctionGenerateRoom
     <<set $_absX to abs($_room.$dofX)>>
     <<set $_absY to abs($_room.$dofY)>>
     <<set $_entranceDistance to sqrt($_absX*$_absX + $_absY*$_absY)>>
+    <<if $_entranceDistance <= 0>>
+        <<set $_entranceDistance to 1>>
+    <<endif>>
 
     // control number of room objects
     <<set $_objectsCount to 0>>
@@ -94,7 +98,7 @@ title: DofFunctionGenerateRoom
         <<endif>>
     <<endif>>
 
-    // extra chest
+    // extra enemy
     <<if $_objectsCount <= $dofRoomAreaMaxId>>
         <<set $DofFunctionDiceRoll_actor to $dofRandomRoomEnemy>>
         <<hagCallNode name="DofFunctionDiceRoll">>
@@ -107,97 +111,11 @@ title: DofFunctionGenerateRoom
 
     // generate room areas
     <<set $DofFunctionGenerateRoomAreas_room to $_room>>
-        <<set $DofFunctionDiceRoll_actor to $dofRandomRoomChest>>
-        <<hagCallNode name="DofFunctionDiceRoll">>
-        <<if $dofRandomRoomChest.$dofRollPositive>>
-            // generate room chest content
-            <<set $DofFunctionGenerateRoomChest_room to $_room>>
-            <<set $DofFunctionGenerateRoomChest_slot to "{$dofNameAltChestItemSlot}">>
-            <<set $DofFunctionGenerateRoomChest_distance to $_entranceDistance>>
-            <<hagCallNode name="DofFunctionGenerateRoomChest">>
-            <<set $_room.$dofHasChest2 to true>>
-            <<set $_objectsCount to $_objectsCount + 1>>
-        <<endif>>
     <<hagCallNode name="DofFunctionGenerateRoomAreas">>
 ===
 
 /**
- * @brief generates random chest loot
- * @param DofFunctionGenerateRoomChest_room Room name
- * expected
- *  dofX
- *  dofY
- * @param DofFunctionGenerateRoomChest_slot Chest item slot name
- * @param DofFunctionGenerateRoomChest_distance Room distance
- */
-title: DofFunctionGenerateRoomChest
----
-    <<set $_loot to 0>>
-    <<set $_lootName to "">>
-    <<set $_prevLootName to "">>
-    <<set $_lootNum to random(1,$dofRoomChestMaxLoot)>>
-    <<while $_loot < $_lootNum>>
-        // generate item
-        <<set $_lootName to "{$_room}{$_slot}{$_loot}">>
-        <<set $DofFunctionGenerateRoomChestItem_chestSlot to $_lootName>>
-        <<set $DofFunctionGenerateRoomChestItem_distance to $_distance>>
-        <<hagCallNode name="DofFunctionGenerateRoomChestItem">>
-
-        // make link with previous
-        <<if $_loot > 0>>
-            <<set $_prevLootName.$dofNext to $_lootName>>
-        <<endif>>
-
-        // iterate
-        <<set $_prevLootName to $_lootName>>
-        <<set $_loot to $_loot+1>>
-    <<endwhile>>
-===
-
-/**
- * @brief generates random chest loot
- * @param DofFunctionGenerateRoomChestItem_chestSlot Chest loot slot name
- * @param DofFunctionGenerateRoomChestItem_distance Room distance
- */
-title: DofFunctionGenerateRoomChestItem
----
-    // clear previous actor in order to remove garbage
-    <<hagActorRemove name="{$_chestSlot}">>
-
-    // generate some item
-    <<set $_found to false>>
-    <<while not $_found>>
-        <<set $_index to random($dofItemMinId, $dofItemMaxId)>>
-
-        <<if $_index is $dofItemMoneyId>> // money
-            <<set $DofFunctionDiceRoll_actor to $dofRandomItemMoney>>
-            <<hagCallNode name="DofFunctionDiceRoll">>
-            <<if $dofRandomItemMoney.$dofRollPositive>>
-                <<set $DofFunctionGenerateRoomChestItemMoney_chestSlot to $_chestSlot>>
-                <<set $DofFunctionGenerateRoomChestItemMoney_distance to $_distance>>
-                <<hagCallNode name="DofFunctionGenerateRoomChestItemMoney">>
-                <<set $_found to true>>
-            <<endif>>
-        <<endif>>
-
-    <<endwhile>>
-===
-
-/**
- * @brief generates some amount of money
- * @param DofFunctionGenerateRoomChestItemMoney_chestSlot Chest loot slot name
- * @param DofFunctionGenerateRoomChestItemMoney_distance Room distance
- */
-title: DofFunctionGenerateRoomChestItemMoney
----
-    <<set $_chestSlot.$dofType to $dofItemMoneyId>>
-    <<set $_count to random(1, $_distance)>>
-    <<set $_chestSlot.$dofCount to $_count>>
-    // TODO <<set $_chestSlot.$dofLink to ???>>
-===
-
-/**
- * @brief generates some amount of money
+ * @brief generates room areas
  * @param DofFunctionGenerateRoomAreas_room Room name
  */
 title: DofFunctionGenerateRoomAreas
@@ -330,10 +248,19 @@ title: DofFunctionGetRoomFreeArea
 /**
  * @brief Add room view based on generated values
  * @param DofFunctionAddMapRoom_room Room name
+ * @param DofFunctionAddMapRoom_readonly No onclick should be specified
  */
+title: DofFunctionAddMapRoom_Params
+---
+    <<set $DofFunctionAddMapRoom_room to "">>
+    <<set $DofFunctionAddMapRoom_readonly to false>>
+===
 title: DofFunctionAddMapRoom
 ---
     <<set $DofFunctionAddMapRoomArea_room to $_room>>
+
+    // make dynamic areas to show in the same mode
+    <<set $DofFunctionAddMapRoomArea_readonly to $_readonly>>
 
     // upper row
     <<set $DofFunctionAddMapRoomArea_area to "{$_room}{$dofNameRoomArea}{$dofRoomAreaLTId}">>
@@ -345,7 +272,11 @@ title: DofFunctionAddMapRoom
     <<hagCallNode name="DofFunctionAddMapRoomArea">>
 
     <<hagHighlightBlockSet type=image>>
-    <<hagHighlightBlockNoteAdd path="{$dofImageTopDoor}"                    style="room" onclick="TopDoor" >>
+    <<if $_readonly>>
+        <<hagHighlightBlockNoteAdd path="{$dofImageTopDoor}"                    style="room">>
+    <<else>>
+        <<hagHighlightBlockNoteAdd path="{$dofImageTopDoor}"                    style="room" onclick="TopDoor" >>
+    <<endif>>
 
     <<set $DofFunctionAddMapRoomArea_area to "{$_room}{$dofNameRoomArea}{$dofRoomAreaRTId}">>
     <<set $DofFunctionAddMapRoomArea_path to "{$dofImageRightTopGround}">>
@@ -354,7 +285,11 @@ title: DofFunctionAddMapRoom
 
     // mid row
     <<hagHighlightBlockSet type=image>>
-    <<hagHighlightBlockNoteAdd path="{$dofImageLeftDoor}"                   style="room" onclick="LeftDoor">>
+    <<if $_readonly>>
+        <<hagHighlightBlockNoteAdd path="{$dofImageLeftDoor}"                   style="room">>
+    <<else>>
+        <<hagHighlightBlockNoteAdd path="{$dofImageLeftDoor}"                   style="room" onclick="LeftDoor">>
+    <<endif>>
 
     <<set $DofFunctionAddMapRoomArea_area to "{$_room}{$dofNameRoomArea}{$dofRoomAreaLMMId}">>
     <<set $DofFunctionAddMapRoomArea_path to "{$dofImageMiddleGround}">>
@@ -365,7 +300,11 @@ title: DofFunctionAddMapRoom
     <<hagCallNode name="DofFunctionAddMapRoomArea">>
 
     <<hagHighlightBlockSet type=image>>
-    <<hagHighlightBlockNoteAdd path="{$dofImageRightDoor}"                  style="room" onclick="RightDoor">>
+    <<if $_readonly>>
+        <<hagHighlightBlockNoteAdd path="{$dofImageRightDoor}"                  style="room">>
+    <<else>>
+        <<hagHighlightBlockNoteAdd path="{$dofImageRightDoor}"                  style="room" onclick="RightDoor">>
+    <<endif>>
 
 
     // bottom row
@@ -375,7 +314,11 @@ title: DofFunctionAddMapRoom
     <<hagCallNode name="DofFunctionAddMapRoomArea">>
 
     <<hagHighlightBlockSet type=image>>
-    <<hagHighlightBlockNoteAdd path="{$dofImageBottomDoor}"                 style="room" onclick="BottomDoor">>
+    <<if $_readonly>>
+        <<hagHighlightBlockNoteAdd path="{$dofImageBottomDoor}"                 style="room">>
+    <<else>>
+        <<hagHighlightBlockNoteAdd path="{$dofImageBottomDoor}"                 style="room" onclick="BottomDoor">>
+    <<endif>>
 
     <<set $DofFunctionAddMapRoomArea_area to "{$_room}{$dofNameRoomArea}{$dofRoomAreaRMBId}">>
     <<set $DofFunctionAddMapRoomArea_path to "{$dofImageBottomGround}">>
@@ -392,6 +335,7 @@ title: DofFunctionAddMapRoom
  * @param DofFunctionAddMapRoomArea_room Room name
  * @param DofFunctionAddMapRoomArea_area Room area name
  * @param DofFunctionAddMapRoomArea_path Path to ground image
+ * @param DofFunctionAddMapRoomArea_readonly No onclick should be specified
  */
 title: DofFunctionAddMapRoomArea
 ---
@@ -401,38 +345,72 @@ title: DofFunctionAddMapRoomArea
         <<set $_generated to "{$_path}+exit.generated.png">>
         <<hagImage check_missing path="{$_generated}" init path="{$_path}" add path="{$dofImageExit}" dst-pdx=-2 dst-pdy=-59 save path="{$_generated}">>
         <<set $_onclick to "Exit">>
+
     <<elseif $_area.$dofHasPlayer>>
         <<set $_generated to "{$_path}+player.generated.png">>
         <<hagImage check_missing path="{$_generated}" init path="{$_path}" add path="{$dofImageCommonPlayer}" dst-pdx=15 dst-pdy=28 save path="{$_generated}">>
         <<set $_onclick to "Player">>
+
     <<elseif $_area.$dofHasChest>>
-        <<set $_generated to "{$_path}+chest.generated.png">>
-        <<hagImage check_missing path="{$_generated}" init path="{$_path}" add path="{$dofImageChest}" dst-pdx=-15 dst-pdy=-50 save path="{$_generated}">>
-        <<set $_onclick to "Chest">>
+        <<set $_chest to "{$_room}{$dofNameChestItemSlot}">>
+        <<if $_chest.$dofStatSneak <= $dofPlayer.dofStatPerception>>
+            <<if $_chest.$dofLocked>>
+                <<set $_generated to "{$_path}+chestlocked.generated.png">>
+                <<hagImage check_missing path="{$_generated}" init path="{$_path}" add path="{$dofImageChestClosed}" dst-pdx=-15 dst-pdy=-50 save path="{$_generated}">>
+                <<set $_onclick to "ChestLocked">>
+            <<elseif $_chest.$dofSmashed>>
+                <<set $_generated to "{$_path}+chestsmashed.generated.png">>
+                <<hagImage check_missing path="{$_generated}" init path="{$_path}" add path="{$dofImageChestSmashed}" dst-pdx=-15 dst-pdy=-50 save path="{$_generated}">>
+                <<set $_onclick to "ChestSmashed">>
+            <<else>>
+                <<set $_generated to "{$_path}+chest.generated.png">>
+                <<hagImage check_missing path="{$_generated}" init path="{$_path}" add path="{$dofImageChest}" dst-pdx=-15 dst-pdy=-50 save path="{$_generated}">>
+                <<set $_onclick to "Chest">>
+            <<endif>>
+        <<endif>>
+
     <<elseif $_area.$dofHasChest2>>
-        <<set $_generated to "{$_path}+chest.generated.png">>
-        <<hagImage check_missing path="{$_generated}" init path="{$_path}" add path="{$dofImageChest}" dst-pdx=-15 dst-pdy=-50 save path="{$_generated}">>
-        <<set $_onclick to "AltChest">>
+        <<set $_chest to "{$_room}{$dofNameAltChestItemSlot}">>
+        <<if $_chest.$dofStatSneak <= $dofPlayer.dofStatPerception>>
+            <<if $_chest.$dofLocked>>
+                <<set $_generated to "{$_path}+chestlocked.generated.png">>
+                <<hagImage check_missing path="{$_generated}" init path="{$_path}" add path="{$dofImageChestClosed}" dst-pdx=-15 dst-pdy=-50 save path="{$_generated}">>
+                <<set $_onclick to "AltChestLocked">>
+            <<elseif $_chest.$dofSmashed>>
+                <<set $_generated to "{$_path}+chestsmashed.generated.png">>
+                <<hagImage check_missing path="{$_generated}" init path="{$_path}" add path="{$dofImageChestSmashed}" dst-pdx=-15 dst-pdy=-50 save path="{$_generated}">>
+                <<set $_onclick to "AltChestSmashed">>
+            <<else>>
+                <<set $_generated to "{$_path}+chest.generated.png">>
+                <<hagImage check_missing path="{$_generated}" init path="{$_path}" add path="{$dofImageChest}" dst-pdx=-15 dst-pdy=-50 save path="{$_generated}">>
+                <<set $_onclick to "AltChest">>
+            <<endif>>
+        <<endif>>
+
     <<elseif $_area.$dofHasTrader>>
         <<set $_generated to "{$_path}+trader.generated.png">>
         <<hagImage check_missing path="{$_generated}" init path="{$_path}" add path="{$dofImageTrader}" dst-pdx=15 dst-pdy=28 save path="{$_generated}">>
         <<set $_onclick to "Trader">>
+
     <<elseif $_area.$dofHasAltar>>
         <<set $_generated to "{$_path}+altar.generated.png">>
         <<hagImage check_missing path="{$_generated}" init path="{$_path}" add path="{$dofImageAltar}" dst-pdx=0 dst-pdy=-26 save path="{$_generated}">>
         <<set $_onclick to "Altar">>
+
     <<elseif $_area.$dofHasEnemy>>
         <<set $_enemy to 1>>
         <<set $_enemy to random(1,5)>> // TODO add enemy generation, just changing image for now
         <<set $_generated to "{$_path}+enemy{$_enemy}.generated.png">>
         <<hagImage check_missing path="{$_generated}" init path="{$_path}" add path="{$dofImageEnemyPartPath}{$_enemy}.png" dst-pdx=10 dst-pdy=28 save path="{$_generated}">>
         <<set $_onclick to "Enemy{$_enemy}">>
+
     <<elseif $_area.$dofHasEnemy2>>
         <<set $_enemy to 1>>
         <<set $_enemy to random(1,5)>> // TODO add enemy generation, just changing image for now
         <<set $_generated to "{$_path}+enemy{$_enemy}.generated.png">>
         <<hagImage check_missing path="{$_generated}" init path="{$_path}" add path="{$dofImageEnemyPartPath}{$_enemy}.png" dst-pdx=10 dst-pdy=28 save path="{$_generated}">>
         <<set $_onclick to "Enemy{$_enemy}">>
+
     <<elseif $_area.$dofHasEvent>>
         <<set $_generated to "{$_path}+event.generated.png">>
         <<hagImage check_missing path="{$_generated}" init path="{$_path}" add path="{$dofImageEvent}" dst-pdx=15 dst-pdy=28 save path="{$_generated}">>
@@ -440,10 +418,260 @@ title: DofFunctionAddMapRoomArea
     <<endif>>
 
     <<hagHighlightBlockSet type=image>>
-    <<if $_onclick is not "">>
+    <<if not $_readonly and $_onclick is not "">>
         <<hagHighlightBlockNoteAdd path="{$_generated}" style="room" onclick="{$_onclick}">>
     <<else>>
         <<hagHighlightBlockNoteAdd path="{$_generated}" style="room">>
     <<endif>>
 ===
 
+/**
+ * @brief Show player inventory and equipment
+ */
+title: DofFunctionShowRoomPlayer
+---
+    <<hagHistoryClean>>
+
+    // show player with stats
+    <<hagCallNode name="DofFunctionAddPlayerImage">>
+    <<set $DofFunctionAddNpcStatsShort_actor to "dofPlayer">>
+    <<hagCallNode name="DofFunctionAddNpcStatsShort">>
+    <<set $DofFunctionAddNpcSecondaryStats_actor to "dofPlayer">>
+    <<hagCallNode name="DofFunctionAddNpcSecondaryStats">>
+
+    // show equipment title
+    <<hagCallNode name="DofFunctionAddEmptyBlock">>
+    <<hagCallNode name="DofFunctionAddPlayerEquipmentTitle">>
+    <<hagCallNode name="DofFunctionAddEmptyBlock">>
+
+    // show equipment items
+    <<hagCallNode name="DofFunctionAddPlayerEquipment">>
+
+    // show inventory title
+    <<hagCallNode name="DofFunctionAddEmptyBlock">>
+    <<hagCallNode name="DofFunctionAddPlayerInventoryTitle">>
+    <<hagCallNode name="DofFunctionAddEmptyBlock">>
+
+    // show inventory items
+    <<hagCallNode name="DofFunctionAddPlayerInventory">>
+
+    <<hagHighlightBlocksShow columns=3 center=true>>
+===
+
+/**
+ * @brief Show npc stats
+ * @param DofFunctionShowRoomNpc_actor Actor name
+ */
+title: DofFunctionShowRoomNpc
+---
+    <<hagHistoryClean>>
+
+    <<set $_link to $_actor.$dofLink>>
+
+    // show image
+    <<if $_link is not "">>
+        <<hagHighlightBlockSet type=image>>
+        <<hagHighlightBlockNoteAdd path="{$_link.$dofImage}">>
+    <<else>>
+        <<hagCallNode name="DofFunctionAddEmptyBlock">>
+    <<endif>>
+
+    // show stats
+    <<set $DofFunctionAddNpcStats_actor to $_actor>>
+    <<hagCallNode name="DofFunctionAddNpcStats">>
+
+    // show description
+    <<if $_link is not "">>
+        <<hagHighlightBlockSet type=info>>
+        <<hagHighlightBlockNoteAdd text="{$_link.$dofDescription}">>
+    <<else>>
+        <<hagCallNode name="DofFunctionAddEmptyBlock">>
+    <<endif>>
+
+    <<hagHighlightBlocksShow columns=3 center=true>>
+===
+
+/**
+ * @brief Show npc stats vs player stats
+ * @param DofFunctionShowRoomNpc_actor Actor name
+ */
+title: DofFunctionShowRoomNpcVsPlayer
+---
+    <<hagHistoryClean>>
+
+    // show player image
+    <<hagCallNode name="DofFunctionAddPlayerImage">>
+
+    // show player with stats
+    <<set $DofFunctionAddNpcStatsShort_actor to "dofPlayer">>
+    <<hagCallNode name="DofFunctionAddNpcStatsShort">>
+
+    // show stats
+    //<<set $DofFunctionAddNpcStatsShort_actor to $_actor>>
+    //<<hagCallNode name="DofFunctionAddNpcStatsShort">>
+    <<set $DofFunctionAddNpcVisibleStats_actor to $_actor>>
+    <<hagCallNode name="DofFunctionAddNpcVisibleStats">>
+
+    // show image
+    <<set $_link to $_actor.$dofLink>>
+    //DEBUG: [{$_link}] *** {$_link.$dofImage} *** {$_link.$dofDescription}
+    <<if $_link is not "">>
+        <<hagHighlightBlockSet type=image>>
+        <<hagHighlightBlockNoteAdd path="{$_link.$dofImage}">>
+    <<else>>
+        <<hagCallNode name="DofFunctionAddEmptyBlock">>
+    <<endif>>
+
+    // show description
+    <<if $_link is not "">>
+        <<hagHighlightBlockSet type=info>>
+        <<hagHighlightBlockNoteAdd text="{$_link.$dofDescription}">>
+    <<else>>
+        <<hagCallNode name="DofFunctionAddEmptyBlock">>
+    <<endif>>
+
+    <<hagHighlightBlocksShow columns=4 center=true>>
+===
+
+/**
+ * @brief Check room container is empty
+ * @param DofFunctionCheckRoomContainerEmpty_room Room name
+ * @param DofFunctionCheckRoomContainerEmpty_slotname Slot name
+ * @return DofFunctionCheckRoomContainerEmpty_empty If container is empty
+ */
+title: DofFunctionCheckRoomContainerEmpty
+---
+    <<set $DofFunctionCheckContainerEmpty_slot to "{$_room}{$_slotname}0">>
+    <<hagCallNode name="DofFunctionCheckContainerEmpty">>
+    <<set $_empty to $DofFunctionCheckContainerEmpty_empty>>
+===
+
+/**
+ * @brief Remove chest from area
+ * @param DofFunctionHideChest_room Room name
+ * @param DofFunctionHideChest_alt True if second chest needs to be hidden
+ */
+title: DofFunctionHideChest
+---
+    // clear room flags
+    <<if $_alt>>
+        <<set $_room.$dofHasChest2 to false>>
+    <<else>>
+        <<set $_room.$dofHasChest to false>>
+    <<endif>>
+
+    // initialize free areas
+    <<set $_index to $dofRoomAreaMinId>>
+    <<while $_index <= $dofRoomAreaMaxId>>
+        <<set $_area to "{$_room}{$dofNameRoomArea}{$_index}">>
+        <<if $_alt>>
+            <<if $_area.$dofHasChest2>>
+                <<set $_area.$dofHasChest2 to false>>
+                <<set $_area.$dofFree to true>>
+            <<endif>>
+        <<else>>
+            <<if $_area.$dofHasChest>>
+                <<set $_area.$dofHasChest to false>>
+                <<set $_area.$dofFree to true>>
+            <<endif>>
+        <<endif>>
+        <<set $_index to $_index + 1>>
+    <<endwhile>>
+===
+
+/**
+ * @brief Generates npc visibility
+ * @param DofFunctionGenerateNpcVisibility_observer Observer name
+ * @param DofFunctionGenerateNpcVisibility_actor Npc name
+ */
+title: DofFunctionGenerateNpcVisibility_Params
+---
+    <<set $DofFunctionGenerateNpcVisibility_observer to "">>
+    <<set $DofFunctionGenerateNpcVisibility_actor to "">>
+===
+title: DofFunctionGenerateNpcVisibility
+---
+    <<set $_visible to $_observer.$dofStatPerception + $_observer.$dofStatListen - $_actor.$dofStatSneak - $_actor.$dofStatDefense>>
+
+    <<if $_visible >= $dofStatsCount>> // all stats are visible
+        <<set $_actor.$dofHideStatConstitution            to false>>
+        <<set $_actor.$dofHideStatListen                  to false>>
+        <<set $_actor.$dofHideStatPerception              to false>>
+        <<set $_actor.$dofHideStatSneak                   to false>>
+        <<set $_actor.$dofHideStatSpeed                   to false>>
+        <<set $_actor.$dofHideStatAttack                  to false>>
+        <<set $_actor.$dofHideStatDefense                 to false>>
+        <<set $_actor.$dofVisibilityRate                  to $dofStatsCount>>
+
+    <<elseif $_visible <= 0>> // no stats are visible
+        <<set $_actor.$dofHideStatConstitution            to true>>
+        <<set $_actor.$dofHideStatListen                  to true>>
+        <<set $_actor.$dofHideStatPerception              to true>>
+        <<set $_actor.$dofHideStatSneak                   to true>>
+        <<set $_actor.$dofHideStatSpeed                   to true>>
+        <<set $_actor.$dofHideStatAttack                  to true>>
+        <<set $_actor.$dofHideStatDefense                 to true>>
+        <<set $_actor.$dofVisibilityRate                  to 0>>
+
+    <<elseif $_visible > $_actor.$dofVisibilityRate>> // actor became more visible
+        <<set $_hidden to 0>>
+        <<while $_hidden < $_visible - $_actor.$dofVisibilityRate>>
+            <<hagRandom min=$dofStatMinId max=$dofStatMaxId>>
+            <<set $_index to result($dofStatMinId)>>
+            <<if $_index is $dofStatConstitutionId and not $_actor.$dofHideStatConstitution>>
+                <<set $_actor.$dofHideStatConstitution to false>>
+                <<set $_hidden to $_hidden+1>>
+            <<elseif $_index is $dofStatListenId and not $_actor.$dofHideStatListen>>
+                <<set $_actor.$dofHideStatListen to false>>
+                <<set $_hidden to $_hidden+1>>
+            <<elseif $_index is $dofStatPerceptionId and not $_actor.$dofHideStatPerception>>
+                <<set $_actor.$dofHideStatPerception to false>>
+                <<set $_hidden to $_hidden+1>>
+            <<elseif $_index is $dofStatSneakId and not $_actor.$dofHideStatSneak>>
+                <<set $_actor.$dofHideStatSneak to false>>
+                <<set $_hidden to $_hidden+1>>
+            <<elseif $_index is $dofStatSpeedId and not $_actor.$dofHideStatSpeed>>
+                <<set $_actor.$dofHideStatSpeed to false>>
+                <<set $_hidden to $_hidden+1>>
+            <<elseif $_index is $dofStatAttackId and not $_actor.$dofHideStatAttack>>
+                <<set $_actor.$dofHideStatAttack to false>>
+                <<set $_hidden to $_hidden+1>>
+            <<elseif $_index is $dofStatDefenseId and not $_actor.$dofHideStatDefense>>
+                <<set $_actor.$dofHideStatDefense to false>>
+                <<set $_hidden to $_hidden+1>>
+            <<endif>>
+        <<endwhile>>
+        <<set $_actor.$dofVisibilityRate                  to $_visible>>
+
+    <<elseif $_visible < $_actor.$dofVisibilityRate>> // actor became more hidden
+        <<set $_hidden to 0>>
+        <<while $_hidden < $_actor.$dofVisibilityRate - $_visible>>
+            <<hagRandom min=$dofStatMinId max=$dofStatMaxId>>
+            <<set $_index to result($dofStatMinId)>>
+            <<if $_index is $dofStatConstitutionId and not $_actor.$dofHideStatConstitution>>
+                <<set $_actor.$dofHideStatConstitution to true>>
+                <<set $_hidden to $_hidden+1>>
+            <<elseif $_index is $dofStatListenId and not $_actor.$dofHideStatListen>>
+                <<set $_actor.$dofHideStatListen to true>>
+                <<set $_hidden to $_hidden+1>>
+            <<elseif $_index is $dofStatPerceptionId and not $_actor.$dofHideStatPerception>>
+                <<set $_actor.$dofHideStatPerception to true>>
+                <<set $_hidden to $_hidden+1>>
+            <<elseif $_index is $dofStatSneakId and not $_actor.$dofHideStatSneak>>
+                <<set $_actor.$dofHideStatSneak to true>>
+                <<set $_hidden to $_hidden+1>>
+            <<elseif $_index is $dofStatSpeedId and not $_actor.$dofHideStatSpeed>>
+                <<set $_actor.$dofHideStatSpeed to true>>
+                <<set $_hidden to $_hidden+1>>
+            <<elseif $_index is $dofStatAttackId and not $_actor.$dofHideStatAttack>>
+                <<set $_actor.$dofHideStatAttack to true>>
+                <<set $_hidden to $_hidden+1>>
+            <<elseif $_index is $dofStatDefenseId and not $_actor.$dofHideStatDefense>>
+                <<set $_actor.$dofHideStatDefense to true>>
+                <<set $_hidden to $_hidden+1>>
+            <<endif>>
+        <<endwhile>>
+        <<set $_actor.$dofVisibilityRate                  to $_visible>>
+
+    <<endif>>
+===

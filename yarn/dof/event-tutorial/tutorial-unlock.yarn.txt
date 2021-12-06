@@ -1,0 +1,48 @@
+/**
+ * @brief Start unlock tutorial
+ */
+title: DofTutorialUnlockStart
+---
+    <<if not visited("DofTutorialUnlockStart")>>
+
+        -> Tutorial: You encountered trap or locked object... #line:ec6fdb
+            <<hagHistoryClean>>
+            <<hagCallNode name="DofTutorialUnlockPlay">>
+        -> Skip Tutorial #line:34ce2e
+
+    <<endif>>
+
+===
+
+title: DofTutorialUnlockPlay
+---
+    // let's start showing scene
+    <<hagSceneMode show=true>>
+
+    <<hagLanguage>>
+    <<set $_lang to result("en")>>
+    <<if $_lang is "">>
+        <<set $_lang to "en">>
+    <<endif>>
+
+    <<hagSceneSet node="DofTutorialUnlock-{$_lang}" show=5000 chat=true>>
+
+    Tutorial: At first, you should see stats comparison of an object and player character #line:9ae2b7
+    Tutorial: Some of the objects stats may be hidden with {$dofColorValue}?{$dofColorEnd} sign #line:189a28
+    Tutorial: The number of hidden stats depends on character's {$dofColorName}{$dofTranslatePerception}{$dofColorEnd} and {$dofColorName}{$dofTranslateListen}{$dofColorEnd} stats #line:e9fa5c
+    Tutorial: There would be some options available, e.g. {$dofColorValue}unlock{$dofColorEnd} for {$dofColorName}{$dofTranslateChest}{$dofColorEnd}, or {$dofColorValue}disarm{$dofColorEnd} for {$dofColorName}{$dofTranslateTrap}{$dofColorEnd} #line:2b9e60
+    Tutorial: In case you want to unlock/disarm the object, it may be done automatically if you have enough {$dofColorName}{$dofTranslateListen}{$dofColorEnd} stat for that. #line:4152da
+    Tutorial: If not, a mini puzzle game is started #line:a65507
+
+    <<hagSceneSet node="DofTutorialUnlockMinigame-{$_lang}" show=3000 chat=true>>
+
+    Tutorial: This is simple "find pair" game, where you need find the same cards #line:b623eb
+    Tutorial: The number of needed card pairs is unknown, but it's possible to calculate it based on stats #line:fd378a
+    Tutorial: {$dofColorName}Altars{$dofColorEnd} may give you some hints #line:bf195b
+    Tutorial: Each pair of turns some number of cards will be blocked, this way there may be no cards left and defeat may happen #line:60fe82
+    Tutorial: If lost, {$dofColorName}{$dofTranslateTrap}{$dofColorEnd} does damage #line:60714b
+    Tutorial: In case of {$dofColorName}containers{$dofColorEnd} you may try multiple times without penalties #line:808edd
+
+    // disable it on exit
+    <<hagSceneMode show=false>>
+===

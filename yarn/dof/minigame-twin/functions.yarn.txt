@@ -1,0 +1,218 @@
+// First initialization of variables
+title: DofFunctionMinigameTwinFindInitVariables
+---
+    <<set $dofMGTFRows to 1>> // number of rows
+    <<set $dofMGTFMaxRows to 6>> // max number of rows
+    <<set $dofMGTFColumns to 4>> // number of columns - constant
+
+    <<set $dofMGTFMaxFieldsNum to $dofMGTFMaxRows*$dofMGTFColumns>> // Max number of fields
+    <<set $dofMGTFMaxImages to $dofMGTFMaxFieldsNum/2>> // Max number of images needed
+
+    <<set $dofMGTFFieldName to "dofMGTFField">>
+    <<set $dofMGTFImageName to "dofMGTFImage">>
+
+    // images
+    <<set $dofImageTopicBasics                     to "img/dof/minigame-twin/ammonite.png">>
+    <<set $dofImageTopicNodes                      to "img/dof/minigame-twin/angler-fish.png">>
+    <<set $dofImageTopicHeader                     to "img/dof/minigame-twin/axolotl.png">>
+    <<set $dofImageTopicBody                       to "img/dof/minigame-twin/bear-head.png">>
+    <<set $dofImageTopicDialogue                   to "img/dof/minigame-twin/bee.png">>
+    <<set $dofImageTopicOptions                    to "img/dof/minigame-twin/bird-twitter.png">>
+    <<set $dofImageTopicJumps                      to "img/dof/minigame-twin/camel-head.png">>
+    <<set $dofImageTopicShortcuts                  to "img/dof/minigame-twin/cassowary-head.png">>
+    <<set $dofImageTopicVariables                  to "img/dof/minigame-twin/charging-bull.png">>
+    <<set $dofImageTopicConditionals               to "img/dof/minigame-twin/chicken.png">>
+    <<set $dofImageTopicCommands                   to "img/dof/minigame-twin/clownfish.png">>
+    <<set $dofImageTopicFunctions                  to "img/dof/minigame-twin/dolphin.png">>
+
+    <<set $dofImageTestNOK                         to "img/dof/minigame-twin/circle-red.png">>
+    <<set $dofImageTestLocked                      to "img/dof/minigame-twin/caged-ball-red.png">>
+===
+
+// First initialization of all images could be used (using topics logos)
+title: DofFunctionMinigameTwinFindInitImages
+---
+    // existing images will be used
+    <<set $_i to 0>>
+    <<set $_image to "">>
+
+    <<set $_i to $_i+1>>
+    <<set $_image to "{$dofMGTFImageName}{$_i}">>
+    <<set $_image.$dofPath to $dofImageTopicBasics>>
+    <<set $_i to $_i+1>>
+    <<set $_image to "{$dofMGTFImageName}{$_i}">>
+    <<set $_image.$dofPath to $dofImageTopicNodes>>
+    <<set $_i to $_i+1>>
+    <<set $_image to "{$dofMGTFImageName}{$_i}">>
+    <<set $_image.$dofPath to $dofImageTopicHeader>>
+    <<set $_i to $_i+1>>
+    <<set $_image to "{$dofMGTFImageName}{$_i}">>
+    <<set $_image.$dofPath to $dofImageTopicBody>>
+    <<set $_i to $_i+1>>
+    <<set $_image to "{$dofMGTFImageName}{$_i}">>
+    <<set $_image.$dofPath to $dofImageTopicDialogue>>
+    <<set $_i to $_i+1>>
+    <<set $_image to "{$dofMGTFImageName}{$_i}">>
+    <<set $_image.$dofPath to $dofImageTopicOptions>>
+    <<set $_i to $_i+1>>
+    <<set $_image to "{$dofMGTFImageName}{$_i}">>
+    <<set $_image.$dofPath to $dofImageTopicJumps>>
+    <<set $_i to $_i+1>>
+    <<set $_image to "{$dofMGTFImageName}{$_i}">>
+    <<set $_image.$dofPath to $dofImageTopicShortcuts>>
+    <<set $_i to $_i+1>>
+    <<set $_image to "{$dofMGTFImageName}{$_i}">>
+    <<set $_image.$dofPath to $dofImageTopicVariables>>
+    <<set $_i to $_i+1>>
+    <<set $_image to "{$dofMGTFImageName}{$_i}">>
+    <<set $_image.$dofPath to $dofImageTopicConditionals>>
+    <<set $_i to $_i+1>>
+    <<set $_image to "{$dofMGTFImageName}{$_i}">>
+    <<set $_image.$dofPath to $dofImageTopicCommands>>
+    <<set $_i to $_i+1>>
+    <<set $_image to "{$dofMGTFImageName}{$_i}">>
+    <<set $_image.$dofPath to $dofImageTopicFunctions>>
+===
+
+// First game initialization
+title: DofFunctionMinigameTwinFindInit
+---
+    <<hagCallNode name="DofFunctionMinigameTwinFindInitVariables">>
+    <<hagCallNode name="DofFunctionMinigameTwinFindInitImages">>
+===
+
+// Show all types of images - used to preload them by user, and speed up things while playing
+// And not waste time to download while in the game
+title: DofFunctionMinigameTwinFindShowImages
+---
+    <<set $_i to 1>>
+    <<while $_i <= $dofMGTFMaxImages>>
+        <<set $_image to "{$dofMGTFImageName}{$_i}">>
+
+        <<hagHighlightBlockSet type="image">>
+        <<hagHighlightBlockNoteAdd path="{$_image.$dofPath}">>
+
+        <<set $_i to $_i+1>>
+    <<endwhile>>
+
+    <<hagHighlightBlocksShow columns=4>>
+===
+
+// clear all fields generated flags
+title: DofFunctionMinigameTwinFindClearGeneratedFields
+---
+    <<set $_i to 1>>
+    <<while $_i <= $dofMGTFFieldsNum>>
+        <<set $_field to "{$dofMGTFFieldName}{$_i}">>
+        <<set $_field.$dofGenerated to false>>
+        <<set $_field.$dofExposed to false>>
+        <<set $_field.$dofLocked to false>>
+        <<set $_i to $_i+1>>
+    <<endwhile>>
+===
+
+// Fill images into random fields
+title: DofFunctionMinigameTwinFindInitFields
+---
+    <<set $dofMGTFFieldsNum to $dofMGTFRows*$dofMGTFColumns>> // actual number of fields needed
+    <<set $dofMGTFImagesNum to $dofMGTFFieldsNum/2>> // number of images needed
+
+    // clear generate flags before twins initialization
+    <<hagCallNode name="DofFunctionMinigameTwinFindClearGeneratedFields">>
+
+    // set generated twins
+    <<set $_field to "">>
+    <<set $_i to 1>>
+    <<set $_fieldIndex to 0>>
+    <<while $_i <= $dofMGTFImagesNum>>
+        <<set $dofImage to "{$dofMGTFImageName}{$_i}">>
+        <<hagCallNode name="DofFunctionMinigameTwinFindInitImage">>
+        <<set $_i to $_i+1>>
+    <<endwhile>>
+===
+
+// Fill single pair of images into random fields
+title: DofFunctionMinigameTwinFindInitImage
+---
+    <<set $_done to 0>>
+    <<while $_done < 2>> // we need twin with the same path
+        <<hagRandom min=1 max=$dofMGTFFieldsNum>>
+        <<set $_fieldIndex to result(0)>>
+        <<set $_field to "{$dofMGTFFieldName}{$_fieldIndex}">>
+
+        <<if not $_field.$dofGenerated>>
+            <<set $_field.$dofPath to $dofImage.$dofPath>>
+            <<set $_field.$dofGenerated to true>>
+            <<set $_done to $_done+1>>
+        <<endif>>
+
+    <<endwhile>>
+===
+
+// Show exposed fields so user can remember them
+title: DofFunctionMinigameTwinFindShowExposedFields
+---
+    <<hagHistoryClean>>
+
+    <<set $_i to 1>>
+    <<while $_i <= $dofMGTFFieldsNum>>
+        <<set $_field to "{$dofMGTFFieldName}{$_i}">>
+
+        <<hagHighlightBlockSet type="image">>
+        <<hagHighlightBlockNoteAdd path="{$_field.$dofPath}">>
+
+        <<set $_i to $_i+1>>
+    <<endwhile>>
+
+    <<hagHighlightBlocksShow columns=4 update=true center=true>>
+===
+
+// Show regular game fields - some are exposed, some are not
+// User can click on unexposed
+title: DofFunctionMinigameTwinFindShowFields
+---
+    <<set $_i to 1>>
+    <<while $_i <= $dofMGTFFieldsNum>>
+        <<set $_field to "{$dofMGTFFieldName}{$_i}">>
+
+        <<hagHighlightBlockSet type="image">>
+
+        <<if $_field.$dofExposed>>
+            <<hagHighlightBlockNoteAdd path="{$_field.$dofPath}">>
+        <<elseif $_field.$dofLocked>>
+            <<hagHighlightBlockNoteAdd path="{$dofImageTestLocked}">>
+        <<else>>
+            <<hagHighlightBlockNoteAdd path="{$dofImageTestNOK}" onclick="{$_i}">>
+        <<endif>>
+
+        <<set $_i to $_i+1>>
+    <<endwhile>>
+
+    <<hagHighlightBlocksShow columns=4 update=true center=true>>
+    <<set $dofMGTFTwinFieldResult to result(0)>>
+===
+
+// Show regular game fields - some are exposed, some are not
+// Nothing is clickable, used to show overall result to user after 2 fields were chosen
+title: DofFunctionMinigameTwinFindShowStaticFields
+---
+    <<set $_i to 1>>
+    <<while $_i <= $dofMGTFFieldsNum>>
+        <<set $_field to "{$dofMGTFFieldName}{$_i}">>
+
+        <<hagHighlightBlockSet type="image">>
+
+        <<if $_field.$dofExposed>>
+            <<hagHighlightBlockNoteAdd path="{$_field.$dofPath}">>
+        <<elseif $_field.$dofLocked>>
+            <<hagHighlightBlockNoteAdd path="{$dofImageTestLocked}">>
+        <<else>>
+            <<hagHighlightBlockNoteAdd path="{$dofImageTestNOK}">>
+        <<endif>>
+
+        <<set $_i to $_i+1>>
+    <<endwhile>>
+
+    <<hagHighlightBlocksShow columns=4 update=true center=true>>
+===
+

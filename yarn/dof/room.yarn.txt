@@ -1,5 +1,6 @@
 title: DofGameDungeonRoom
 ---
+    // room
     <<set $dofPlayer.dofX to $dofPlayer.dofNextX>>
     <<set $dofPlayer.dofY to $dofPlayer.dofNextY>>
     <<set $dofPlayer.dofOrientation to $dofPlayer.dofNextOrientation>>
@@ -11,33 +12,32 @@ title: DofGameDungeonRoom
 //<<box>>
 //Room info:
 //    room        = {$dofRoom}
-//    run         = player {$dofPlayer.$dofRunNum}/{$dofRoom.$dofRunNum} room
+//    run         = player {$dofPlayer.dofRunNum}/{$dofRoom.$dofRunNum} room
 //<<endbox>>
 
 
     //DEBUG: You are in the room {$dofRoom}
 
     // generate room if player was upstairs, some of the rooms will be unchanged
-    <<if $dofPlayer.$dofRunNum > $dofRoom.$dofRunNum>>
+    <<if $dofPlayer.dofRunNum > $dofRoom.$dofRunNum>>
+        // regenerate player HP when not visited room is found
+        // this should encourage to go to a new rooms
+        <<set $_diffHP to $dofPlayer.dofHP>>
+        <<hagCallNode name="DofFunctionRegeneratePlayerHP">>
+        <<set $_diffHP to $dofPlayer.dofHP - $_diffHP>>
+        <<if $_diffHP > 0>>
+            Player regenerated {$dofColorValue}{$_diffHP}{$dofColorEnd}{$dofImageInlineHP}. #line:f8e2fd
+        <<endif>>
+
         // generate room
         <<set $DofFunctionGenerateRoom_room to $dofRoom>>
         <<hagCallNode name="DofFunctionGenerateRoom">>
 
         // set run number, so it will be unchanged until dungeon exit
-        <<set $dofRoom.$dofRunNum to $dofPlayer.$dofRunNum>>
-    <<endif>>
-
-//    // check if visited room, output something funny
-//    <<if $dofRoom.$dofVisited>>
+        <<set $dofRoom.$dofRunNum to $dofPlayer.dofRunNum>>
+    <<else>>
 //        You have a strong feeling that you has been here already.
-//    <<else>>
-//        // TODO random room description
-//    <<endif>>
-//
-//    <<if $dofPlayer.dofX is 0 and $dofPlayer.dofY is 0>>
-//        You are near entrance spot. You have {$dofPlayer.dofGold} coins in your pocket.
-//        [[Let me out!|DofGameDungeonEntrance]] // TODO price to pay
-//    <<endif>>
+    <<endif>>
 
     <<set $dofRoom.$dofVisited to true>>
 
@@ -48,7 +48,7 @@ title: DofGameDungeonRoom
 //<<box>>
 //Room info:
 //    room        = {$dofRoom}
-//    run         = player {$dofPlayer.$dofRunNum}/{$dofRoom.$dofRunNum} room
+//    run         = player {$dofPlayer.dofRunNum}/{$dofRoom.$dofRunNum} room
 //<<endbox>>
 //
 //
@@ -64,14 +64,22 @@ title: DofGameDungeonRoom
 
 
     <<set $DofFunctionAddMapRoom_room to $dofRoom>>
+    <<set $DofFunctionAddMapRoom_readonly to false>>
     <<hagCallNode name="DofFunctionAddMapRoom">>
-    <<hagHighlightBlocksShow columns=4 center=true>>
+    <<hagHighlightBlocksShow columns=4 center=true update=true>>
     <<set $dofResult to result("")>>
+
+    // update with read only map
+    <<set $DofFunctionAddMapRoom_room to $dofRoom>>
+    <<set $DofFunctionAddMapRoom_readonly to true>>
+    <<hagCallNode name="DofFunctionAddMapRoom">>
+    <<hagHighlightBlocksShow columns=4 center=true update=true>>
 
     // process result
     <<if $dofResult is "TopDoor">> // forward
         // orientation preserved
         <<hagCallNode name="DofGameDungeonCorridor">>
+
     <<elseif $dofResult is "LeftDoor">> // left
         <<if $dofPlayer.dofOrientation is "YPositive">>
             <<set $dofPlayer.dofNextOrientation to "XNegative">>
@@ -82,11 +90,12 @@ title: DofGameDungeonRoom
         <<elseif $dofPlayer.dofOrientation is "XPositive">>
             <<set $dofPlayer.dofNextOrientation to "YPositive">>
         <<else>>
-            You seems to stuck here. This is internal program failure. Please, report it to the support team and provide a save file.
+            You seems to stuck here. This is internal program failure. Please, report it to the support team and provide a save file. #line:103fde
             // TODO [[Save environment for support team|Game.Save]]
             // TODO Recover option
         <<endif>>
         <<hagCallNode name="DofGameDungeonCorridor">>
+
     <<elseif $dofResult is "RightDoor">> // right
         <<if $dofPlayer.dofOrientation is "YPositive">>
             <<set $dofPlayer.dofNextOrientation to "XPositive">>
@@ -97,11 +106,12 @@ title: DofGameDungeonRoom
         <<elseif $dofPlayer.dofOrientation is "XNegative">>
             <<set $dofPlayer.dofNextOrientation to "YPositive">>
         <<else>>
-            You seems to stuck here. This is internal program failure. Please, report it to the support team and provide a save file.
+            You seems to stuck here. This is internal program failure. Please, report it to the support team and provide a save file. #line:ee65f5
             // TODO [[Save environment for support team|Game.Save]]
             // TODO Recover option
         <<endif>>
         <<hagCallNode name="DofGameDungeonCorridor">>
+
     <<elseif $dofResult is "BottomDoor">> // back
         <<if $dofPlayer.dofOrientation is "YPositive">>
             <<set $dofPlayer.dofNextOrientation to "YNegative">>
@@ -112,33 +122,196 @@ title: DofGameDungeonRoom
         <<elseif $dofPlayer.dofOrientation is "XNegative">>
             <<set $dofPlayer.dofNextOrientation to "XPositive">>
         <<else>>
-            You seems to stuck here. This is internal program failure. Please, report it to the support team and provide a save file.
+            You seems to stuck here. This is internal program failure. Please, report it to the support team and provide a save file. #line:56f974
             // TODO [[Save environment for support team|Game.Save]]
             // TODO Recover option
         <<endif>>
         <<hagCallNode name="DofGameDungeonCorridor">>
-    <<elseif $dofResult is "Player">> // back
-        <<hagHistoryClean>>
 
-        // show equipment title
-        <<hagCallNode name="DofFunctionAddPlayerEquipmentTitle">>
-        <<hagHighlightBlocksShow>>
+    <<elseif $dofResult is "Player">> // player
+        <<hagCallNode name="DofFunctionShowRoomPlayer">>
+        [[Back|DofGameDungeonRoom]] #line:36ee3a
 
-        // show equipment items
-        <<hagCallNode name="DofFunctionAddPlayerEquipment">>
-        <<hagHighlightBlocksShow>>
+    <<elseif $dofResult is "ChestLocked">> // locked chest
+        <<set $_chest to "{$dofRoom}{$dofNameChestItemSlot}">>
+        <<set $DofFunctionShowRoomNpcVsPlayer_actor to $_chest>>
+        <<hagCallNode name="DofFunctionShowRoomNpcVsPlayer">>
 
-        // show inventory title
-        <<hagCallNode name="DofFunctionAddPlayerInventoryTitle">>
-        <<hagHighlightBlocksShow>>
+        [[Unlock|DofGameDungeonRoomChestUnlock]] #line:a64d2a
+        [[Smash|DofGameDungeonRoomChestSmash]] #line:66e3e9
+        [[Back|DofGameDungeonRoom]] #line:53f8fc
 
-        // show inventory items
-        <<hagCallNode name="DofFunctionAddPlayerInventory">>
-        <<hagHighlightBlocksShow>>
+    <<elseif $dofResult is "AltChestLocked">> // chest
+        <<set $_chest to "{$dofRoom}{$dofNameAltChestItemSlot}">>
+        <<set $DofFunctionShowRoomNpcVsPlayer_actor to $_chest>>
+        <<hagCallNode name="DofFunctionShowRoomNpcVsPlayer">>
 
-        [[Back|DofGameDungeonRoom]]
+        [[Unlock|DofGameDungeonRoomAltChestUnlock]] #line:2dde8a
+        [[Smash|DofGameDungeonRoomAltChestSmash]] #line:a153e9
+        [[Back|DofGameDungeonRoom]] #line:111331
+
+    <<elseif $dofResult is "Chest" or $dofResult is "ChestSmashed">> // chest
+        // TODO if smashed - remove some items durability
+
+        <<set $DofFunctionShowRoomContainerItems_room to $dofRoom>>
+        <<set $DofFunctionShowRoomContainerItems_title to $dofTranslateChest>>
+        <<set $DofFunctionShowRoomContainerItems_slotname to $dofNameChestItemSlot>>
+        <<set $DofFunctionShowRoomContainerItems_max to $dofRoomChestMaxLoot>>
+        <<hagCallNode name="DofFunctionShowRoomContainerItems">>
+
+        // check chest is empty and remove it
+        <<set $DofFunctionCheckRoomContainerEmpty_room to $dofRoom>>
+        <<set $DofFunctionCheckRoomContainerEmpty_slotname to $dofNameChestItemSlot>>
+        <<hagCallNode name="DofFunctionCheckRoomContainerEmpty">>
+        <<if $DofFunctionCheckRoomContainerEmpty_empty>>
+            // hide chest
+            <<set $DofFunctionHideChest_room to $dofRoom>>
+            <<set $DofFunctionHideChest_alt to false>>
+            <<hagCallNode name="DofFunctionHideChest">> 
+        <<endif>>
+
+        [[DofGameDungeonRoom]]
+
+    <<elseif $dofResult is "AltChest" or $dofResult is "AltChestSmashed">> // chest
+        // TODO if smashed - remove some items durability
+
+        <<set $DofFunctionShowRoomContainerItems_room to $dofRoom>>
+        <<set $DofFunctionShowRoomContainerItems_title to $dofTranslateChest>>
+        <<set $DofFunctionShowRoomContainerItems_slotname to $dofNameAltChestItemSlot>>
+        <<set $DofFunctionShowRoomContainerItems_max to $dofRoomChestMaxLoot>>
+        <<hagCallNode name="DofFunctionShowRoomContainerItems">>
+
+        // check chest is empty and remove it
+        <<set $DofFunctionCheckRoomContainerEmpty_room to $dofRoom>>
+        <<set $DofFunctionCheckRoomContainerEmpty_slotname to $dofNameAltChestItemSlot>>
+        <<hagCallNode name="DofFunctionCheckRoomContainerEmpty">>
+        <<if $DofFunctionCheckRoomContainerEmpty_empty>>
+            // hide chest
+            <<set $DofFunctionHideChest_room to $dofRoom>>
+            <<set $DofFunctionHideChest_alt to true>>
+            <<hagCallNode name="DofFunctionHideChest">> 
+        <<endif>>
+
+        [[DofGameDungeonRoom]]
+
+    <<elseif $dofResult is "Exit">> // dungeon exit
+        <<if $dofPlayer.dofGold >= 100>>
+            The door is closed. In order to exit, you need put {$dofColorValue}100{$dofColorEnd}{$dofImageInlineCoin} into small hole one by one. #line:dc7238
+            -> Pay to exit #line:6e755a
+                <<set $dofPlayer.dofGold to $dofPlayer.dofGold - 100>>
+                [[DofGameDungeonEntrance]]
+            -> Noope, I have not finished here yet #line:3ce162
+
+        <<else>>
+            The door is closed. In order to exit, you need put {$dofColorValue}100{$dofColorEnd}{$dofImageInlineCoin} into small hole one by one. And it appears you have only {$dofColorValue}{$dofPlayer.dofGold}{$dofColorEnd}{$dofImageInlineCoin}. #line:870eaa
+        <<endif>>
+        [[DofGameDungeonRoom]]
+
     <<else>>
         [[DofGameDungeonRoom]]
     <<endif>>
-
 ===
+
+title: DofGameDungeonRoomChestSmash
+---
+    <<set $DofFunctionSmashRoomChest_room to $dofRoom>>
+    <<set $DofFunctionSmashRoomChest_slotname to $dofNameChestItemSlot>>
+    <<hagCallNode name="DofFunctionSmashRoomChest">>
+===
+
+title: DofGameDungeonRoomAltChestSmash
+---
+    <<set $DofFunctionSmashRoomChest_room to $dofRoom>>
+    <<set $DofFunctionSmashRoomChest_slotname to $dofNameAltChestItemSlot>>
+    <<hagCallNode name="DofFunctionSmashRoomChest">>
+===
+
+/**
+ * @brief Do chest smash, if successful chest is broken and items are falling to the floor
+ * @param DofFunctionSmashRoomChest_room Room name
+ * @param DofFunctionSmashRoomChest_slotname Slot name
+ */
+title: DofFunctionSmashRoomChest
+---
+    // get chest name
+    <<set $_chest to "{$_room}{$_slotname}">>
+
+    // compare player and chest stats to detect if we could damage chest with single blow
+    <<if $dofPlayer.dofStatAttack >= ($_chest.$dofStatConstitution + $_chest.$dofStatDefense)>>
+        You hit the chest with all your strength. The chest is highly damaged and some items are damaged as well. #line:9f040a
+        <<set $_chest.$dofLocked to false>>
+        <<set $_chest.$dofSmashed to true>>
+        <<set $_chest.$dofLink to "dofItemChestSmashed">>
+    <<else>>
+        You hit the chest with all your strength but that was not enough to break the thing. #line:c046b6
+        <<set $_chest.$dofStatDefense to $_chest.$dofStatDefense - $dofPlayer.dofStatAttack>> // decrease chest defense
+    <<endif>>
+
+    // TODO damage player weapons ? YES, but randomly with 80% not to break
+
+    [[Back|DofGameDungeonRoom]] #line:cb3879
+===
+
+title: DofGameDungeonRoomChestUnlock
+---
+    <<set $DofFunctionUnlockRoomChest_room to $dofRoom>>
+    <<set $DofFunctionUnlockRoomChest_slotname to $dofNameChestItemSlot>>
+    <<hagCallNode name="DofFunctionUnlockRoomChest">>
+===
+
+title: DofGameDungeonRoomAltChestUnlock
+---
+    <<set $DofFunctionUnlockRoomChest_room to $dofRoom>>
+    <<set $DofFunctionUnlockRoomChest_slotname to $dofNameAltChestItemSlot>>
+    <<hagCallNode name="DofFunctionUnlockRoomChest">>
+===
+
+/**
+ * @brief Do chest unlock, if successful chest items are available to loot
+ * @param DofFunctionUnlockRoomChest_room Room name
+ * @param DofFunctionUnlockRoomChest_slotname Slot name
+ */
+title: DofFunctionUnlockRoomChest
+---
+    //***************************************************************************/
+    // tutorial event
+    <<if not visited("DofTutorialUnlockStart")>>
+        <<hagCallNode name="DofTutorialUnlockStart">>
+    <<endif>>
+    //***************************************************************************/
+
+    <<set $_chest to "{$_room}{$_slotname}">>
+
+    // compare player and chest stats to detect if we could unlock it
+    <<if $dofPlayer.dofStatListen >= $_chest.$dofStatSneak>>
+        You have unlocked chest successfully. You can reach chest and see if there are something valuable present. #line:912a03
+
+        // chest is unlocked and container available
+        <<set $_chest.$dofLocked to false>>
+        <<set $_chest.$dofLink to "dofItemChest">>
+
+        [[DofGameDungeonRoom]]
+    <<else>>
+        // play mini game
+        <<set $DofFunctionMinigameTwinFind_rows to 6>> // TODO to constant
+        <<set $DofFunctionMinigameTwinFind_expected to 1 + $_chest.$dofStatSneak - $dofPlayer.dofStatListen>>
+        <<set $DofFunctionMinigameTwinFind_lock to ($_chest.$dofStatPerception + $_chest.$dofStatListen) / 2>>
+        <<hagCallNode name="DofFunctionMinigameTwinFind">>
+
+        <<if $DofFunctionMinigameTwinFind_pairs >= $DofFunctionMinigameTwinFind_expected>>
+            You have unlocked chest successfuly. You can reach chest and see if there are something valuable present. #line:800390
+
+            // chest is unlocked and container available
+            <<set $_chest.$dofLocked to false>>
+            <<set $_chest.$dofLink to "dofItemChest">>
+
+            [[DofGameDungeonRoom]]
+        <<else>>
+            No luck, the chest lock is too complex for you. #line:687be2
+            [[Retry|DofFunctionUnlockRoomChest]] #line:6d34c7
+            [[Back|DofGameDungeonRoom]] #line:35f879
+        <<endif>>
+    <<endif>>
+===
+
+

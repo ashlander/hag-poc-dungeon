@@ -1,44 +1,311 @@
+/**
+ * @brief Get current corridor name, and fills corridor coordinates
+ * The problem is corridor between roomX1Y1 and roomX1Y2 is one,
+ * but there are 2 directions to appear in the corridor
+ * now an unique name of corridor needed when going from both sides
+ * to find the player in the same corridor
+ * expected
+ *  dofPlayer.dofX
+ *  dofPlayer.dofY
+ *  dofPlayer.dofOrientation
+ * @return DofFunctionGenerateCorridorName_corridor Corridor name
+ */
+title: DofFunctionGenerateCorridorName
+---
+    // corridor
+    <<set $_x to $dofPlayer.dofX>>
+    <<set $_y to $dofPlayer.dofY>>
+    <<set $_orientation to $dofPlayer.dofNextOrientation>>
+
+    <<if $_orientation is "YNegative">>
+        <<set $_y to $_y - 1>>
+        <<set $_orientation to "YPositive">>
+    <<elseif $_orientation is "XNegative">>
+        <<set $_x to $_x - 1>>
+        <<set $_orientation to "XPositive">>
+    <<endif>>
+
+    <<set $_corridor to "Corridor x{$_x} y{$_y} o{$_orientation}">>
+    <<set $_corridor.$dofX to $_x>>
+    <<set $_corridor.$dofY to $_y>>
+
+    // TODO if DEBUG
+    //DEBUG: {$_corridor}
+===
+
 title: DofGameDungeonCorridor
 ---
-    // show room map
+    // corridor
+    <<hagCallNode name="DofFunctionGenerateCorridorName">>
+    <<set $dofCorridor to $DofFunctionGenerateCorridorName_corridor>>
+
+    // generate corridor if player was upstairs
+    <<if $dofPlayer.dofRunNum > $dofCorridor.$dofRunNum>>
+        // generate corridor
+        <<set $DofFunctionGenerateCorridor_corridor to $dofCorridor>>
+        <<hagCallNode name="DofFunctionGenerateCorridor">>
+
+        // set run number, so it will be unchanged until dungeon exit
+        <<set $dofCorridor.$dofRunNum to $dofPlayer.dofRunNum>>
+    <<endif>>
+
+    // show corridor map
     <<hagHistoryClean>>
-    <<hagCallNode name="DofFunctionAddMapCorridorTemplate">>
-    <<hagHighlightBlocksShow columns=4 center=true>>
+    <<set $DofFunctionAddMapCorridor_corridor to $dofCorridor>>
+    <<set $DofFunctionAddMapCorridor_readonly to false>>
+    <<hagCallNode name="DofFunctionAddMapCorridor">>
+    <<hagHighlightBlocksShow columns=4 center=true update=true>>
     <<set $dofResult to result("")>>
+
+    // show read-only corridor map
+    <<set $DofFunctionAddMapCorridor_corridor to $dofCorridor>>
+    <<set $DofFunctionAddMapCorridor_readonly to true>>
+    <<hagCallNode name="DofFunctionAddMapCorridor">>
+    <<hagHighlightBlocksShow columns=4 center=true update=true>>
 
     // process result
     <<if $dofResult is "RightDoor">> // forward
-        // discover new orientation
-        <<if $dofPlayer.dofNextOrientation is "YPositive">>
-            <<set $dofPlayer.dofNextY to $dofPlayer.dofY + 1>>
-        <<elseif $dofPlayer.dofNextOrientation is "YNegative">>
-            <<set $dofPlayer.dofNextY to $dofPlayer.dofY - 1>>
-        <<elseif $dofPlayer.dofNextOrientation is "XPositive">>
-            <<set $dofPlayer.dofNextX to $dofPlayer.dofX + 1>>
-        <<elseif $dofPlayer.dofNextOrientation is "XNegative">>
-            <<set $dofPlayer.dofNextX to $dofPlayer.dofX - 1>>
+        // try to outrun the trap
+        <<hagCallNode name="DofFunctionCorridorTrapOutRun">>
+
+        // [#17] TODO [[Listen|DofGameDungeonCorridorRightDoorListen]]
+        <<set $_door to "{$dofCorridor}{$dofNameDoorItemSlot}">>
+        <<if $_door.$dofLocked>>
+            <<set $DofFunctionShowRoomNpcVsPlayer_actor to $_door>>
+            <<hagCallNode name="DofFunctionShowRoomNpcVsPlayer">>
+
+            [[Unlock|DofGameDungeonCorridorRightDoorUnlock]] #line:9b617f
+            [[Back|DofGameDungeonCorridor]] #line:f7d65e
         <<else>>
-            You seems to stuck here. This is internal program failure. Please, report it to the support team and provide a save file.
-            // TODO [[Save environment for support team|Game.Save]]
-            // TODO Recover option
+            [[DofGameDungeonCorridorRightDoorEnter]]
         <<endif>>
 
-        <<set $dofNextRoom to "Room x{$dofPlayer.dofX} y{$dofPlayer.dofY}">>
-
-        // check if room was generated, if not - create fill room
-        <<if $dofNextRoom.$dofGenerated>>
-        <<else>>
-            // TODO generate next room internals
-            <<set $dofRoom.$dofGenerated to true>>
-        <<endif>>
 
     <<elseif $dofResult is "LeftDoor">> // back
+        <<set $dofPlayer.dofNextOrientation to $dofPlayer.dofOrientation>>
+
+        // enter room
+        <<hagCallNode name="DofGameDungeonRoom">>
+
+    <<elseif $dofResult is "Player">> // player
+        <<hagCallNode name="DofFunctionShowRoomPlayer">>
+        [[Back|DofGameDungeonCorridor]] #line:87b6a6
+
+    <<elseif $dofResult is "TrapArmed">> // armed trap
+        <<set $_trap to "{$dofCorridor}{$dofNameTrapItemSlot}">>
+        <<set $DofFunctionShowRoomNpcVsPlayer_actor to $_trap>>
+        <<hagCallNode name="DofFunctionShowRoomNpcVsPlayer">>
+
+        [[Disarm|DofGameDungeonCorridorTrapDisarm]] #line:660a37
+        [[Smash|DofGameDungeonCorridorTrapSmash]] #line:4f8867
+        [[Outrun|DofGameDungeonCorridorTrapRun]] #line:b36ebe
+        [[Back|DofGameDungeonCorridor]] #line:52a441
+
+    <<elseif $dofResult is "TrapDisarmed">> // disarmed trap
+        <<set $DofFunctionShowRoomContainerItems_room to $dofCorridor>>
+        <<set $DofFunctionShowRoomContainerItems_title to "{$dofTranslateTrap}">>
+        <<set $DofFunctionShowRoomContainerItems_slotname to "{$dofNameTrapItemSlot}">>
+        <<set $DofFunctionShowRoomContainerItems_max to $dofRoomTrapMaxLoot>>
+        <<hagCallNode name="DofFunctionShowRoomContainerItems">>
+
+        [[DofGameDungeonCorridor]]
+
+    // TODO apply Listen stat to detect monsters in the next room (vs monster Sneak stat)
+
+    <<else>>
+        [[DofGameDungeonCorridor]]
+    <<endif>>
+
+===
+
+title: DofGameDungeonCorridorTrapSmash
+---
+    <<set $_trap to "{$dofCorridor}{$dofNameTrapItemSlot}">>
+
+    // compare player and trap stats to detect if we could damage trap with single blow
+    <<if $dofPlayer.dofStatAttack >= ($_trap.$dofStatConstitution + $_trap.$dofStatDefense)>>
+        You hit the trap with all your strength. The trap is highly damaged, and can do no harm to you. #line:31300f
+    <<else>>
+        <<set $DofFunctionHitPlayerWithTrap_room to $dofCorridor>>
+        <<hagCallNode name="DofFunctionHitPlayerWithTrap">>
+        <<set $_damage to $DofFunctionHitPlayerWithTrap_damage>>
+        <<if $_damage > 0>>
+            You hit the trap with all your strength but that was not enough. The trap triggered and damages you for {$dofColorValue}{$_damage}{$dofColorEnd}{$dofImageInlineHP}. Your gear got some damage. #line:64b58b
+        <<else>>
+            You hit the trap with all your strength but that was not enough. The trap triggered and damages you for... never mind you blocked it. Your gear got some damage. #line:aea670
+        <<endif>>
+    <<endif>>
+
+    // trap is disarmed and container with any valuables destroyed
+    <<set $_trap.$dofArmed to false>>
+    <<set $_trap.$dofContainer to false>>
+
+    [[Back|DofGameDungeonCorridor]] #line:bd5524
+===
+
+title: DofGameDungeonCorridorTrapDisarm
+---
+    //***************************************************************************/
+    // tutorial event
+    <<if not visited("DofTutorialUnlockStart")>>
+        <<hagCallNode name="DofTutorialUnlockStart">>
+    <<endif>>
+    //***************************************************************************/
+
+    <<set $_trap to "{$dofCorridor}{$dofNameTrapItemSlot}">>
+
+    // compare player and trap stats to detect if we could disarme it
+    <<if $dofPlayer.dofStatListen >= $_trap.$dofStatSneak>>
+        You have dissarmed trap successfuly. You can reach trap core and see if there are something valuable present. #line:6f3e2e
+
+        // trap is disarmed and container available
+        <<set $_trap.$dofArmed to false>>
+        <<set $_trap.$dofContainer to true>>
+    <<else>>
+        <<set $DofFunctionMinigameTwinFind_rows to 6>> // TODO to constant
+        <<set $DofFunctionMinigameTwinFind_expected to 1 + $_trap.$dofStatSneak - $dofPlayer.dofStatListen>>
+        <<set $DofFunctionMinigameTwinFind_lock to ($_trap.$dofStatPerception + $_trap.$dofStatListen) / 2>>
+        <<hagCallNode name="DofFunctionMinigameTwinFind">>
+
+        <<if $DofFunctionMinigameTwinFind_pairs >= $DofFunctionMinigameTwinFind_expected>>
+            You have dissarmed trap successfuly. You can reach trap core and see if there are something valuable present. #line:4de645
+
+            // trap is disarmed and container available
+            <<set $_trap.$dofArmed to false>>
+            <<set $_trap.$dofContainer to true>>
+        <<else>>
+            <<set $DofFunctionHitPlayerWithTrap_room to $dofCorridor>>
+            <<hagCallNode name="DofFunctionHitPlayerWithTrap">>
+            <<set $_damage to $DofFunctionHitPlayerWithTrap_damage>>
+            <<if $_damage > 0>>
+                The trap triggered and damages you for {$dofColorValue}{$_damage}{$dofColorEnd}{$dofImageInlineHP}. Your gear got some damage. #line:d6e1f1
+            <<else>>
+                The trap triggered and damages you for... never mind you blocked it. Your gear got some damage. #line:3a76eb
+            <<endif>>
+
+            // trap is disarmed and container with any valuables destroyed
+            <<set $_trap.$dofArmed to false>>
+            <<set $_trap.$dofContainer to false>>
+        <<endif>>
+    <<endif>>
+
+    [[Back|DofGameDungeonCorridor]] #line:b4ea61
+===
+
+title: DofGameDungeonCorridorTrapRun
+---
+    <<set $_trap to "{$dofCorridor}{$dofNameTrapItemSlot}">>
+
+    // compare player and trap stats to detect if we could run near the trap undamaged
+    <<if $dofPlayer.dofStatSpeed > $_trap.$dofStatSpeed>>
+        You started moving as fast as you can to reach the door. Trap was triggered but there was noone to damage, {$dofColorValue}you were faster{$dofColorEnd}. #line:2d7999
+    <<else>>
+        <<set $DofFunctionHitPlayerWithTrap_room to $dofCorridor>>
+        <<hagCallNode name="DofFunctionHitPlayerWithTrap">>
+        <<set $_damage to $DofFunctionHitPlayerWithTrap_damage>>
+        <<if $_damage > 0>>
+            You were not fast enough. The trap triggered and damages you for {$dofColorValue}{$_damage}{$dofColorEnd}{$dofImageInlineHP}. Your gear got some damage. #line:d4c438
+        <<else>>
+            The trap triggered and damages you for... never mind you blocked it. Your gear got some damage. #line:e50a3e
+        <<endif>>
+    <<endif>>
+
+    // trap is triggered and container with any valuables destroyed
+    <<set $_trap.$dofArmed to false>>
+    <<set $_trap.$dofContainer to false>>
+
+    [[Back|DofGameDungeonCorridor]] #line:d9c473
+===
+
+title: DofFunctionCorridorTrapOutRun
+---
+    <<set $_trap to "{$dofCorridor}{$dofNameTrapItemSlot}">>
+
+    <<if $_trap.$dofArmed>>
+        // compare player and trap stats to detect if we could run near the trap undamaged
+        <<if $dofPlayer.dofStatSpeed > $_trap.$dofStatSpeed>>
+            While you were moving towards the door, trap was triggered but there was noone to damage, {$dofColorValue}you were faster{$dofColorEnd}. #line:378180
+        <<else>>
+            <<set $DofFunctionHitPlayerWithTrap_room to $dofCorridor>>
+            <<hagCallNode name="DofFunctionHitPlayerWithTrap">>
+            <<set $_damage to $DofFunctionHitPlayerWithTrap_damage>>
+            <<if $_damage > 0>>
+                You were not fast enough. The trap triggered and damages you for {$dofColorValue}{$_damage}{$dofColorEnd}{$dofImageInlineHP}. Your gear got some damage. #line:41cb0a
+            <<else>>
+                The trap triggered and damages you for... never mind you blocked it. Your gear got some damage. #line:21f53e
+            <<endif>>
+        <<endif>>
+
+        // trap is triggered and container with any valuables destroyed
+        <<set $_trap.$dofArmed to false>>
+        <<set $_trap.$dofContainer to false>>
+    <<endif>>
+===
+
+title: DofGameDungeonCorridorRightDoorListen
+---
+    // TODO generate next room
+    // TODO listen next room
+===
+
+title: DofGameDungeonCorridorRightDoorUnlock
+---
+    //***************************************************************************/
+    // tutorial event
+    <<if not visited("DofTutorialUnlockStart")>>
+        <<hagCallNode name="DofTutorialUnlockStart">>
+    <<endif>>
+    //***************************************************************************/
+
+    <<set $_door to "{$dofCorridor}{$dofNameDoorItemSlot}">>
+
+    // compare player and door stats to detect if we could unlock it
+    <<if $dofPlayer.dofStatListen >= $_door.$dofStatSneak>>
+        You have unlocked door successfuly. You can now enter the room behind it. #line:af6596
+
+        // door is unlocked
+        <<set $_door.$dofLocked to false>>
+
+        [[DofGameDungeonCorridor]]
+    <<else>>
+        // play mini game
+        <<set $DofFunctionMinigameTwinFind_rows to 6>> // TODO to constant
+        <<set $DofFunctionMinigameTwinFind_expected to 1 + $_door.$dofStatSneak - $dofPlayer.dofStatListen>>
+        <<set $DofFunctionMinigameTwinFind_lock to ($_door.$dofStatPerception + $_door.$dofStatListen) / 2>>
+        <<hagCallNode name="DofFunctionMinigameTwinFind">>
+
+        <<if $DofFunctionMinigameTwinFind_pairs >= $DofFunctionMinigameTwinFind_expected>>
+            You have unlocked door successfuly. You can now enter the room behind it. #line:fd88de
+
+            // door is unlocked
+            <<set $_door.$dofLocked to false>>
+
+            [[DofGameDungeonCorridor]]
+        <<else>>
+            No luck, the door lock is too complex for you. #line:d7d0d8
+            [[Retry|DofGameDungeonCorridorRightDoorUnlock]] #line:c99775
+            [[Back|DofGameDungeonCorridor]] #line:46c6ac
+        <<endif>>
+    <<endif>>
+===
+
+title: DofGameDungeonCorridorRightDoorEnter
+---
+    // discover new orientation
+    <<if $dofPlayer.dofNextOrientation is "YPositive">>
+        <<set $dofPlayer.dofNextY to $dofPlayer.dofY + 1>>
+    <<elseif $dofPlayer.dofNextOrientation is "YNegative">>
+        <<set $dofPlayer.dofNextY to $dofPlayer.dofY - 1>>
+    <<elseif $dofPlayer.dofNextOrientation is "XPositive">>
+        <<set $dofPlayer.dofNextX to $dofPlayer.dofX + 1>>
+    <<elseif $dofPlayer.dofNextOrientation is "XNegative">>
+        <<set $dofPlayer.dofNextX to $dofPlayer.dofX - 1>>
+    <<else>>
+        You seems to stuck here. This is internal program failure. Please, report it to the support team and provide a save file. #line:4f10e9
+        // TODO [[Save environment for support team|Game.Save]]
+        // TODO Recover option
     <<endif>>
 
     // enter room
     <<hagCallNode name="DofGameDungeonRoom">>
-
-    // TODO check for traps encounter vs Perception or Listen stat
-    // TODO check for random item encounter vs Perception or Listen stat
-    // TODO apply Listen stat to detect monsters in the next room (vs monster Sneak stat)
 ===

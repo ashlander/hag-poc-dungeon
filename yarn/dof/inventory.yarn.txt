@@ -1,13 +1,76 @@
-title: DofGamePlayerInventory
+/**
+ * @brief Show container items and player inventory
+ * @param DofFunctionShowRoomContainerItems_room Room name
+ * @param DofFunctionShowRoomContainerItems_title Container title, beter be translated
+ * @param DofFunctionShowRoomContainerItems_slotname Items slot name
+ * @param DofFunctionShowRoomContainerItems_max Maximum number of items
+ */
+title: DofFunctionShowRoomContainerItems
 ---
-    // show inventory title
-    <<hagCallNode name="DofFunctionAddPlayerInventoryTitle">>
-    <<hagHighlightBlocksShow>>
+    <<set $_continue to true>>
+    <<hagHistoryClean>>
+    <<while $_continue>>
 
-    // show inventory items
-    <<hagCallNode name="DofFunctionAddPlayerInventory">>
-    <<hagHighlightBlocksShow>>
+        // show player with stats
+        <<hagCallNode name="DofFunctionAddPlayerImage">>
+        <<set $DofFunctionAddNpcStatsShort_actor to "dofPlayer">>
+        <<hagCallNode name="DofFunctionAddNpcStatsShort">>
+        <<set $DofFunctionAddNpcSecondaryStats_actor to "dofPlayer">>
+        <<hagCallNode name="DofFunctionAddNpcSecondaryStats">>
 
-    [[Back|DofGameDungeonRoom]]
+        // show chest title
+        <<hagCallNode name="DofFunctionAddEmptyBlock">>
+        <<hagHighlightBlockSet type=image>>
+        <<hagHighlightBlockNoteAdd text="{$_title}">>
+        <<hagCallNode name="DofFunctionAddEmptyBlock">>
 
+        // show image of container
+        <<set $_item to "{$_room}{$_slotname}">>
+        <<set $_link to $_item.$dofLink>>
+        <<if $_link is not "">>
+            <<hagHighlightBlockSet type=image>>
+            <<hagHighlightBlockNoteAdd path="{$_link.$dofImage}">>
+        <<else>>
+            <<hagCallNode name="DofFunctionAddEmptyBlock">>
+        <<endif>>
+
+        // show container content
+        <<set $DofFunctionAddContainerItems_max to $_max>>
+        <<set $DofFunctionAddContainerItems_slot to "{$_room}{$_slotname}0">>
+        <<hagCallNode name="DofFunctionAddContainerItems">>
+        <<hagHighlightBlockSet type=image>>
+        <<hagHighlightBlockNoteAdd path="{$dofImageMenuArrowLeft}" onclick="Back">>
+
+        <<set $_emptyNum to (3 - ($_max + 2) % 3)>> // detect number of left slots to add
+        <<while $_emptyNum > 0>>
+            <<hagCallNode name="DofFunctionAddEmptyBlock">>
+            <<set $_emptyNum to $_emptyNum - 1>>
+        <<endwhile>>
+
+        // show inventory title
+        <<hagCallNode name="DofFunctionAddEmptyBlock">>
+        <<hagCallNode name="DofFunctionAddPlayerInventoryTitle">>
+        <<hagCallNode name="DofFunctionAddEmptyBlock">>
+
+        // show inventory items
+        <<hagCallNode name="DofFunctionAddPlayerInventory">>
+
+        <<hagHighlightBlocksShow columns=3 center=true update=true>>
+        <<set $_result to result("")>>
+
+        // check results
+        <<if $_result is "Back">>
+            <<set $_continue to false>>
+        <<elseif $_result is not "">> // expecting result is chest slot name
+            <<if $_result.$dofType is $dofItemMoneyId>>
+                <<set $dofPlayer.dofGold to $dofPlayer.dofGold + $_result.$dofCount>>
+                <<set $_result.$dofFree to true>>
+            <<else>>
+                // TODO show item description before take
+            <<endif>>
+
+        <<else>>
+            DEBUG: Not Implemented #line:f649ec
+        <<endif>>
+    <<endwhile>>
 ===

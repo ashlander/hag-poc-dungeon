@@ -20,7 +20,6 @@ title: DofFunctionAddPlayerImage
  */
 title: DofFunctionAddNpcStats
 ---
-    // add player stats
     <<hagHighlightBlockSet type=value>>
     <<hagHighlightBlockNoteAdd text="{$dofTranslateConstitution}"   value=$_actor.$dofStatConstitution  path="{$dofImageConstitution}">>
     <<hagHighlightBlockNoteAdd text="{$dofTranslateListen}"         value=$_actor.$dofStatListen        path="{$dofImageListen}">>
@@ -29,8 +28,176 @@ title: DofFunctionAddNpcStats
     <<hagHighlightBlockNoteAdd text="{$dofTranslateSpeed}"          value=$_actor.$dofStatSpeed         path="{$dofImageSpeed}">>
     <<hagHighlightBlockNoteAdd text="{$dofTranslateAttack}"         value=$_actor.$dofStatAttack        path="{$dofImageAttack}">>
     <<hagHighlightBlockNoteAdd text="{$dofTranslateDefense}"        value=$_actor.$dofStatDefense       path="{$dofImageDefense}">>
-
 ===
+
+/**
+ * @brief Add npc stats, output '?' instead of stat if not visible
+ * @param DofFunctionAddNpcVisibleStats_actor Actor name with stats
+ */
+title: DofFunctionAddNpcVisibleStats
+---
+    <<if $_actor.$dofVisibilityRate >= 7>>
+        <<set $DofFunctionAddNpcStats_actor to $_actor>>
+        <<hagCallNode name="DofFunctionAddNpcStats">>
+    <<else>>
+        <<hagHighlightBlockSet type=value>>
+
+        <<if $_actor.$dofHideStatConstitution>>
+            <<set $_value to "?">>
+        <<else>>
+            <<set $_value to "{$_actor.$dofStatConstitution}">>
+        <<endif>>
+        <<hagHighlightBlockNoteAdd text="{$dofTranslateConstitution}"   value=$_value path="{$dofImageConstitution}">>
+
+        <<if $_actor.$dofHideStatListen>>
+            <<set $_value to "?">>
+        <<else>>
+            <<set $_value to "{$_actor.$dofStatListen}">>
+        <<endif>>
+        <<hagHighlightBlockNoteAdd text="{$dofTranslateListen}"         value=$_value path="{$dofImageListen}">>
+
+        <<if $_actor.$dofHideStatPerception>>
+            <<set $_value to "?">>
+        <<else>>
+            <<set $_value to "{$_actor.$dofStatPerception}">>
+        <<endif>>
+        <<hagHighlightBlockNoteAdd text="{$dofTranslatePerception}"     value=$_value path="{$dofImagePerception}">>
+
+        <<if $_actor.$dofHideStatSneak>>
+            <<set $_value to "?">>
+        <<else>>
+            <<set $_value to "{$_actor.$dofStatSneak}">>
+        <<endif>>
+        <<hagHighlightBlockNoteAdd text="{$dofTranslateSneak}"          value=$_value path="{$dofImageSneak}">>
+
+        <<if $_actor.$dofHideStatSpeed>>
+            <<set $_value to "?">>
+        <<else>>
+            <<set $_value to "{$_actor.$dofStatSpeed}">>
+        <<endif>>
+        <<hagHighlightBlockNoteAdd text="{$dofTranslateSpeed}"          value=$_value path="{$dofImageSpeed}">>
+
+        <<if $_actor.$dofHideStatAttack>>
+            <<set $_value to "?">>
+        <<else>>
+            <<set $_value to "{$_actor.$dofStatAttack}">>
+        <<endif>>
+        <<hagHighlightBlockNoteAdd text="{$dofTranslateAttack}"         value=$_value path="{$dofImageAttack}">>
+
+        <<if $_actor.$dofHideStatDefense>>
+            <<set $_value to "?">>
+        <<else>>
+            <<set $_value to "{$_actor.$dofStatDefense}">>
+        <<endif>>
+        <<hagHighlightBlockNoteAdd text="{$dofTranslateDefense}"        value=$_value path="{$dofImageDefense}">>
+    <<endif>>
+===
+
+
+/**
+ * @brief Add npc stats without description (short form)
+ * @param DofFunctionAddNpcStatsShort_actor Actor name with stats
+ */
+title: DofFunctionAddNpcStatsShort
+---
+    <<hagHighlightBlockSet type=value>>
+    <<hagHighlightBlockNoteAdd value=$_actor.$dofStatConstitution  path="{$dofImageConstitution}">>
+    <<hagHighlightBlockNoteAdd value=$_actor.$dofStatListen        path="{$dofImageListen}">>
+    <<hagHighlightBlockNoteAdd value=$_actor.$dofStatPerception    path="{$dofImagePerception}">>
+    <<hagHighlightBlockNoteAdd value=$_actor.$dofStatSneak         path="{$dofImageSneak}">>
+    <<hagHighlightBlockNoteAdd value=$_actor.$dofStatSpeed         path="{$dofImageSpeed}">>
+    <<hagHighlightBlockNoteAdd value=$_actor.$dofStatAttack        path="{$dofImageAttack}">>
+    <<hagHighlightBlockNoteAdd value=$_actor.$dofStatDefense       path="{$dofImageDefense}">>
+===
+
+/**
+ * @brief Add npc stats without description (short form), output '?' instead of stat if not visible
+ * @param DofFunctionAddNpcVisibleStatsShort_actor Actor name with stats
+ */
+title: DofFunctionAddNpcVisibleStatsShort
+---
+    <<if $_actor.$dofVisibilityRate >= 7>>
+        <<set $DofFunctionAddNpcStatsShort_actor to $_actor>>
+        <<hagCallNode name="DofFunctionAddNpcStatsShort">>
+    <<else>>
+        <<hagHighlightBlockSet type=value>>
+
+        <<if $_actor.$dofHideStatConstitution>>
+            <<set $_value to "?">>
+        <<else>>
+            <<set $_value to "{$_actor.$dofStatConstitution}">>
+        <<endif>>
+        <<hagHighlightBlockNoteAdd value=$_value path="{$dofImageConstitution}">>
+
+        <<if $_actor.$dofHideStatListen>>
+            <<set $_value to "?">>
+        <<else>>
+            <<set $_value to "{$_actor.$dofStatListen}">>
+        <<endif>>
+        <<hagHighlightBlockNoteAdd value=$_value path="{$dofImageListen}">>
+
+        <<if $_actor.$dofHideStatPerception>>
+            <<set $_value to "?">>
+        <<else>>
+            <<set $_value to "{$_actor.$dofStatPerception}">>
+        <<endif>>
+        <<hagHighlightBlockNoteAdd value=$_value path="{$dofImagePerception}">>
+
+        <<if $_actor.$dofHideStatSneak>>
+            <<set $_value to "?">>
+        <<else>>
+            <<set $_value to "{$_actor.$dofStatSneak}">>
+        <<endif>>
+        <<hagHighlightBlockNoteAdd value=$_value path="{$dofImageSneak}">>
+
+        <<if $_actor.$dofHideStatSpeed>>
+            <<set $_value to "?">>
+        <<else>>
+            <<set $_value to "{$_actor.$dofStatSpeed}">>
+        <<endif>>
+        <<hagHighlightBlockNoteAdd value=$_value path="{$dofImageSpeed}">>
+
+        <<if $_actor.$dofHideStatAttack>>
+            <<set $_value to "?">>
+        <<else>>
+            <<set $_value to "{$_actor.$dofStatAttack}">>
+        <<endif>>
+        <<hagHighlightBlockNoteAdd value=$_value path="{$dofImageAttack}">>
+
+        <<if $_actor.$dofHideStatDefense>>
+            <<set $_value to "?">>
+        <<else>>
+            <<set $_value to "{$_actor.$dofStatDefense}">>
+        <<endif>>
+        <<hagHighlightBlockNoteAdd value=$_value path="{$dofImageDefense}">>
+
+    <<endif>>
+===
+
+/**
+ * @brief Add npc secondary stats
+ * @param DofFunctionAddNpcSecondaryStats_actor Actor name with stats
+ */
+title: DofFunctionAddNpcSecondaryStats
+---
+    <<hagHighlightBlockSet type=value>>
+    <<set $_maxhp to $_actor.$dofStatConstitution * $dofHPperConstitution>>
+    <<hagHighlightBlockNoteAdd text="{$dofTranslateHP}"         value="{$_actor.$dofHP}/{$_maxhp}"  path="{$dofImageHP}">>
+    <<hagHighlightBlockNoteAdd text="{$dofTranslateMoney}"      value=$_actor.$dofGold              path="{$dofImageCoin}">>
+===
+
+/**
+ * @brief Add npc secondary stats without text
+ * @param DofFunctionAddNpcSecondaryStatsShort_actor Actor name with stats
+ */
+title: DofFunctionAddNpcSecondaryStatsShort
+---
+    <<hagHighlightBlockSet type=value>>
+    <<set $_maxhp to $_actor.$dofStatConstitution * $dofHPperConstitution>>
+    <<hagHighlightBlockNoteAdd value="{$_actor.$dofHP}/{$_maxhp}"  path="{$dofImageHP}">>
+    <<hagHighlightBlockNoteAdd value=$_actor.$dofGold              path="{$dofImageCoin}">>
+===
+
 
 // Add current players stats
 title: DofFunctionAddPlayerStats
@@ -50,21 +217,6 @@ title: DofFunctionAddPlayerStatsWithPoints
     <<hagCallNode name="DofFunctionAddEmptyBlock">>
 ===
 
-// Add current players stats without description (short form)
-title: DofFunctionAddPlayerStatsShort
----
-    // add player stats
-    <<hagHighlightBlockSet type=value>>
-    <<hagHighlightBlockNoteAdd value=$dofPlayer.dofStatConstitution  path="{$dofImageConstitution}">>
-    <<hagHighlightBlockNoteAdd value=$dofPlayer.dofStatListen        path="{$dofImageListen}">>
-    <<hagHighlightBlockNoteAdd value=$dofPlayer.dofStatPerception    path="{$dofImagePerception}">>
-    <<hagHighlightBlockNoteAdd value=$dofPlayer.dofStatSneak         path="{$dofImageSneak}">>
-    <<hagHighlightBlockNoteAdd value=$dofPlayer.dofStatSpeed         path="{$dofImageSpeed}">>
-    <<hagHighlightBlockNoteAdd value=$dofPlayer.dofStatAttack        path="{$dofImageAttack}">>
-    <<hagHighlightBlockNoteAdd value=$dofPlayer.dofStatDefense       path="{$dofImageDefense}">>
-
-===
-
 // Add left stat points to distribute
 title: DofFunctionAddNewPlayerStatPoints
 ---
@@ -77,7 +229,7 @@ title: DofFunctionAddNewPlayerStatPoints
     <<endif>>
 
     <<hagHighlightBlockSet type=info>>
-    <<hagHighlightBlockNoteAdd text="{$dofValueColor}{$dofPlayer.dofStatPointsLeft}{$dofColorEnd} points left to distribute">>
+    <<hagHighlightBlockNoteAdd text="{$dofValueColor}{$dofPlayer.dofStatPointsLeft}{$dofColorEnd} points left to distribute">> #line:469ec8
 ===
 
 // Add current players stats level up menu group
@@ -188,48 +340,34 @@ title: DofFunctionAddPlayerEquipment
     <<hagHighlightBlockNoteAdd path="{$dofImageEquipmentQuick2EmptySlot}">>
 ===
 
-// Show room map template
-title: DofFunctionAddMapCorridorTemplate
----
-    // mid row
-    <<hagHighlightBlockSet type=image>>
-    <<hagHighlightBlockNoteAdd path="{$dofImageLeftCorridorDoor}"           style="room" onclick="LeftDoor">>
-
-    <<hagHighlightBlockSet type=image>>
-    <<hagHighlightBlockNoteAdd path="{$dofImageMiddleCorridorCharGround}"   style="room" onclick="Player">>
-
-    <<hagHighlightBlockSet type=image>>
-    <<hagHighlightBlockNoteAdd path="{$dofImageMiddleCorridorGround}"       style="room" >>
-
-    <<hagHighlightBlockSet type=image>>
-    <<hagHighlightBlockNoteAdd path="{$dofImageRightCorridorDoor}"          style="room" onclick="RightDoor">>
-===
-
 /**
- * @brief Reset unit stats to 0
- * @param DofFunctionResetStats_actor Actor name with stats to reset
+ * @brief Debug main stats
+ * @param DofFunctionDebugStats_actor Actor name with stats to output
  */
-title: DofFunctionResetStats
+title: DofFunctionDebugStats
 ---
-    <<set $_actor.$dofStatConstitution     to 0>>
-    <<set $_actor.$dofStatListen           to 0>>
-    <<set $_actor.$dofStatPerception       to 0>>
-    <<set $_actor.$dofStatSneak            to 0>>
-    <<set $_actor.$dofStatSpeed            to 0>>
-    <<set $_actor.$dofStatAttack           to 0>>
-    <<set $_actor.$dofStatDefense          to 0>>
+<<box>>
+    [u]dofStatConstitution[/u]     {$_actor.$dofStatConstitution} #line:eff237
+    [u]dofStatListen[/u]           {$_actor.$dofStatListen} #line:81be2d
+    [u]dofStatPerception[/u]       {$_actor.$dofStatPerception} #line:8411f5
+    [u]dofStatSneak[/u]            {$_actor.$dofStatSneak} #line:c46df0
+    [u]dofStatSpeed[/u]            {$_actor.$dofStatSpeed} #line:d32ac8
+    [u]dofStatAttack[/u]           {$_actor.$dofStatAttack} #line:a70ff0
+    [u]dofStatDefense[/u]          {$_actor.$dofStatDefense} #line:3183c1
+<<endbox>>
 ===
+
 
 /**
  * @brief Populates unit with random stats
  * previously set stats will not be erased
- * @param DofFunctionGenerateRandomStats_actor Actor name with stats to populate
+ * @param DofFunctionGenerateNpcRandomStats_actor Actor name with stats to populate
  * expected
  *  dofStatMax - max stat value
  *  dofStatMin - min stat value
  *  dofStatPointsLeft - stat points to distribute
  */
-title: DofFunctionGenerateRandomStats
+title: DofFunctionGenerateNpcRandomStats
 ---
     <<set $dofStatId                to 0>>
 
@@ -282,3 +420,29 @@ title: DofFunctionGenerateRandomStats
 
     <<endwhile>>
 ===
+
+/**
+ * @brief Regenerate HP of npc based on Constitution stat
+ * @param DofFunctionRegenerateNpcHP_actor Npc name
+ *  expected
+ *      dofHP
+ */
+title: DofFunctionRegenerateNpcHP
+---
+    <<set $_maxhp to $_actor.$dofStatConstitution * $dofHPperConstitution>>
+    <<if $_actor.$dofHP + $_actor.$dofStatConstitution > $_maxhp>>
+        <<set $_actor.$dofHP to $_maxhp>>
+    <<else>>
+        <<set $_actor.$dofHP to $_actor.$dofHP + $_actor.$dofStatConstitution>>
+    <<endif>>
+===
+
+/**
+ * @brief Regenerate HP of player character based on Constitution stat
+ */
+title: DofFunctionRegeneratePlayerHP
+---
+    <<set $DofFunctionRegenerateNpcHP_actor to "dofPlayer">>
+    <<hagCallNode name="DofFunctionRegenerateNpcHP">>
+===
+
