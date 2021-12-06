@@ -30,7 +30,8 @@ title: DofFunctionDiceRoll
 ---
     // random roll
     <<set $_randomMax to $_actor.$dofPositive + $_actor.$dofPositiveBoost + $_actor.$dofNegative + $_actor.$dofNegativeBoost>>
-    <<set $_roll to random(1, $_randomMax)>>
+    <<hagRandom min=1 max=$_randomMax>>
+    <<set $_roll to result(1)>>
 
     // process results
     <<if $_roll <= $_actor.$dofPositive + $_actor.$dofPositiveBoost>>
@@ -43,7 +44,7 @@ title: DofFunctionDiceRoll
     <<set $_actor.$dofRoll to $_roll>>
 
     // post process
-    <<if $_actor.$dofPositiveNum <= 0 && $_actor.$dofNegativeNum <= 0>>
+    <<if $_actor.$dofPositiveNum <= 0 and $_actor.$dofNegativeNum <= 0>>
         // regenerate numbers without loosing entire progress
         <<set $_actor.$dofPositiveNum to $_actor.$dofPositiveNum + $_actor.$dofPositive>>
         <<set $_actor.$dofNegativeNum to $_actor.$dofNegativeNum + $_actor.$dofNegative>>
@@ -99,6 +100,19 @@ title: DofFunctionInitDices
     <<set $DofFunctionDiceClear_actor to $dofRandomRoomEvent>>
     <<set $DofFunctionDiceClear_actor.$dofPositive    to 50>>
     <<set $DofFunctionDiceClear_actor.$dofNegative    to 50>>
+    <<hagCallNode name="DofFunctionDiceClear">>
+
+    // corridor generation
+    <<set $dofRandomCorridorTrap to "{$dofNameRandomGeneratorSlot}CorridorTrap">>
+    <<set $DofFunctionDiceClear_actor to $dofRandomCorridorTrap>>
+    <<set $DofFunctionDiceClear_actor.$dofPositive    to 50>>
+    <<set $DofFunctionDiceClear_actor.$dofNegative    to 50>>
+    <<hagCallNode name="DofFunctionDiceClear">>
+
+    <<set $dofRandomCorridorLocked to "{$dofNameRandomGeneratorSlot}CorridorLocked">>
+    <<set $DofFunctionDiceClear_actor to $dofRandomCorridorLocked>>
+    <<set $DofFunctionDiceClear_actor.$dofPositive    to 2>>
+    <<set $DofFunctionDiceClear_actor.$dofNegative    to 8>>
     <<hagCallNode name="DofFunctionDiceClear">>
 
     // item generation

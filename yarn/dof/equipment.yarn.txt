@@ -8,6 +8,6 @@ title: DofGamePlayerEquipment
     <<hagCallNode name="DofFunctionAddPlayerEquipment">>
     <<hagHighlightBlocksShow>>
 
-    [[Back|DofGameDungeonRoom]]
+    [[Back|DofGameDungeonRoom]] #line:7440b9
 
 ===

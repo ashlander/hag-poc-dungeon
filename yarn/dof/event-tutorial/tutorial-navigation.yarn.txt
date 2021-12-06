@@ -1,0 +1,59 @@
+/**
+ * @brief Start navigation tutorial
+ */
+title: DofTutorialNavigationStart
+---
+    <<if not visited("DofTutorialNavigationStart")>>
+
+        -> Tutorial: You found yourself in a room #line:fd9a4f
+            <<hagHistoryClean>>
+            <<hagCallNode name="DofTutorialNavigationPlay">>
+        -> Skip Tutorial #line:3bee8f
+
+    <<endif>>
+
+===
+
+title: DofTutorialNavigationPlay
+---
+    // let's start showing scene
+    <<hagSceneMode show=true>>
+
+    <<hagLanguage>>
+    <<set $_lang to result("en")>>
+    <<if $_lang is "">>
+        <<set $_lang to "en">>
+    <<endif>>
+
+    <<hagSceneSet node="DofTutorialNavigationRoom-{$_lang}" show=8000 chat=true>>
+
+    Tutorial: {$dofColorName}Room{$dofColorEnd} is divided into {$dofColorValue}12{$dofColorEnd} areas. #line:1e3396
+    Tutorial: There is {$dofColorValue}1{$dofColorEnd} predefined {$dofColorName}player character{$dofColorEnd} area #line:2d5f54
+    Tutorial: By clicking on character, inventory will be shown #line:da90d1
+    Tutorial: There may be {$dofColorValue}1{$dofColorEnd} predefined {$dofColorName}exit{$dofColorEnd} area #line:c33d99
+    Tutorial: It is located in one single room, represent starting point of the trip #line:676ff5
+    Tutorial: In order to exit to the surface you need use it, but pay some toll in gold #line:3229d7
+    Tutorial: There are {$dofColorValue}4{$dofColorEnd} predefined {$dofColorName}doors{$dofColorEnd} #line:e052f6
+    Tutorial: Game tries to make player feel lost all the time #line:a5611e
+    Tutorial: Each door leads to next room, but each door has special meaning #line:4dd32c
+    Tutorial: In order to travel to other room, just {$dofColorValue}click{$dofColorEnd} or {$dofColorValue}push{$dofColorEnd} door #line:ea3119
+    Tutorial: Upper door means {$dofColorValue}Go Forward{$dofColorEnd}, bottom - {$dofColorValue}Go Backward{$dofColorEnd} #line:3fec6d
+    Tutorial: E.g. if player will use bottom door all the time - character will be moving between two same rooms #line:5e65fb
+    Tutorial: Left and right doors mean {$dofColorValue}Go Left{$dofColorEnd} and {$dofColorValue}Go Right{$dofColorEnd} #line:893d20
+    Tutorial: E.g. if player will choose to go left all the time - character will make full circle and return back in {$dofColorValue}4{$dofColorEnd} turns #line:754118
+    Tutorial: This leaves from {$dofColorValue}6{$dofColorEnd} to {$dofColorValue}7{$dofColorEnd} areas left for special objects, events and enemies #line:c7d8d2
+    Tutorial: Areas which may be played have special colored borders #line:e1f8cf
+    Tutorial: Between rooms there is another location - {$dofColorName}corridor{$dofColorEnd} #line:f5a5b2
+
+    <<hagSceneSet node="DofTutorialNavigationCorridor-{$_lang}" show=4000 chat=true>>
+
+    Tutorial: {$dofColorName}Corridor{$dofColorEnd} is location with {$dofColorValue}2{$dofColorEnd} doors #line:fb709c
+    Tutorial: Right one - {$dofColorValue}Go Forward{$dofColorEnd}, left - {$dofColorValue}Go Backward{$dofColorEnd} #line:ee76ac
+    Tutorial: By going forward you will move to next room #line:9e37c2
+    Tutorial: By going backward you will return to previous room #line:927f48
+
+    Tutorial: Good luck ! #line:9e8604
+
+    // disable it on exit
+    <<hagSceneMode show=false>>
+===

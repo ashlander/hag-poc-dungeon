@@ -1,0 +1,40 @@
+title: DofFunctionInitItems
+---
+    // map armed trap
+    <<set $_item to "dofItemTrapArmed">>
+    <<set $_item.$dofDescription to "Trap, deadly mechanism created to harm. Armed and ready to bring pain.">> #line:141df1
+    <<set $_item.$dofImage to $dofImageTrapArmed>>
+
+    // map disarmed trap
+    <<set $_item to "dofItemTrapDisarmed">>
+    <<set $_item.$dofDescription to "Trap, disarmed and will not do any harm.">> #line:aba8f7
+    <<set $_item.$dofImage to $dofImageTrapWorked>>
+
+    // chest
+    <<set $_item to "dofItemChestLocked">>
+    <<set $_item.$dofDescription to "Locked chest. Hm, there is no reason to lock empty chest.">> #line:9bf0f5
+    <<set $_item.$dofImage to $dofImageChestClosed>>
+
+    <<set $_item to "dofItemChestSmashed">>
+    <<set $_item.$dofDescription to "Just a bunch of items on the ground">> #line:9b1dbd
+    <<set $_item.$dofImage to $dofImageChestSmashed>>
+
+    <<set $_item to "dofItemChest">>
+    <<set $_item.$dofDescription to "Unlocked chest, that's time to loot.">> #line:60a2ed
+    <<set $_item.$dofImage to $dofImageChest>>
+
+    // door
+    <<set $_item to "dofItemRightDoor">>
+    <<set $_item.$dofDescription to "The door to next room.">> #line:135013
+    <<set $_item.$dofImage to $dofImageRightCorridorDoor>>
+
+    <<set $_item to "dofItemRightDoorLocked">>
+    <<set $_item.$dofDescription to "Locked door. Needs to be unlocked to pass into next room.">> #line:aad7cf
+    <<set $_item.$dofImage to $dofImageRightCorridorDoor>>
+
+    // money
+    <<set $_item to "dofItemMoney">>
+    <<set $_item.$dofDescription to "Shiny metal peaces to trade and pay for the exit">> #line:57f0b6
+    <<set $_item.$dofImage to $dofImageCoin>>
+
+===

@@ -4,6 +4,7 @@ title: DofFunctionInitStyles
     <<set $dofColorValue                                to "[color=#f3cd1d]">>
     <<set $dofColorOKValue                              to "[color=#447506]">>
     <<set $dofColorNOKValue                             to "[color=#a7360d]">>
+    <<set $dofColorName                                 to "[color=#9fcb4c]">>
     <<set $dofColorEnd                                  to "[/color]">>
 ===
 
@@ -11,25 +12,34 @@ title: DofFunctionInitStyles
 title: DofFunctionInitTranslations
 ---
     // stats
-    <<set $dofTranslateConstitution                     to "Constitution">> #line:
-    <<set $dofTranslateListen                           to "Listen">> #line:
-    <<set $dofTranslatePerception                       to "Perception">> #line:
-    <<set $dofTranslateSneak                            to "Sneak">> #line:
-    <<set $dofTranslateSpeed                            to "Speed">> #line:
-    <<set $dofTranslateAttack                           to "Attack">> #line:
-    <<set $dofTranslateDefense                          to "Defense">> #line:
+    <<set $dofTranslateConstitution                     to "Constitution">> #line:576aed
+    <<set $dofTranslateListen                           to "Listen">> #line:30c1e1
+    <<set $dofTranslatePerception                       to "Perception">> #line:c13d84
+    <<set $dofTranslateSneak                            to "Sneak">> #line:3d6f67
+    <<set $dofTranslateSpeed                            to "Speed">> #line:bb58bf
+    <<set $dofTranslateAttack                           to "Attack">> #line:d11106
+    <<set $dofTranslateDefense                          to "Defense">> #line:38a9dd
 
-    <<set $dofTranslateConstitutionDescription          to "Constitution Description">> #line:
-    <<set $dofTranslateListenDescription                to "Listen Description">> #line:
-    <<set $dofTranslatePerceptionDescription            to "Perception Description">> #line:
-    <<set $dofTranslateSneakDescription                 to "Sneak Description">> #line:
-    <<set $dofTranslateSpeedDescription                 to "Speed Description">> #line:
-    <<set $dofTranslateAttackDescription                to "Attack Description">> #line:
-    <<set $dofTranslateDefenseDescription               to "Defense Description">> #line:
+    <<set $dofTranslateConstitutionDescription          to "Constitution influence HP and regeneration">> #line:e0e2e1
+    <<set $dofTranslateListenDescription                to "Listen influence danger detection, traps disarming and lock picking">> #line:d39d82
+    <<set $dofTranslatePerceptionDescription            to "Perception influence hidden objects detection, enemy vulnerabilities detection">> #line:b6f738
+    <<set $dofTranslateSneakDescription                 to "Sneak influence on how well you are hiding yourself and your vulnerabilities">> #line:38c19d
+    <<set $dofTranslateSpeedDescription                 to "Speed influence movement, trap avoidance and enemies escape">> #line:763be6
+    <<set $dofTranslateAttackDescription                to "Attack influence damage amount to enemies and objects">> #line:99e4d5
+    <<set $dofTranslateDefenseDescription               to "Defense influence damage protection">> #line:c9c4c8
+
+    // secondary stats
+    <<set $dofTranslateHP                               to "Hit Points">> #line:75a8c2
+    <<set $dofTranslateDescription                      to "Hit Points Description">> #line:d78003
 
     // menus
-    <<set $dofTranslateInventory                        to "Inventory">> #line:
-    <<set $dofTranslateEquipment                        to "Equipment">> #line:
+    <<set $dofTranslateInventory                        to "Inventory">> #line:9a19c8
+    <<set $dofTranslateEquipment                        to "Equipment">> #line:85b21c
+
+    // items
+    <<set $dofTranslateChest                            to "Chest">> #line:7588d6
+    <<set $dofTranslateTrap                             to "Trap">> #line:b5cf85
+    <<set $dofTranslateMoney                            to "Coins">> #line:25c1df
 ===
 
 // variables with ingame variable names
@@ -37,11 +47,13 @@ title: DofFunctionInitSlotNames
 ---
     <<set $dofNameInventorySlot                         to "DofEnvSlot">>
     <<set $dofNameRoomArea                              to "DofRoomArea">>
+    <<set $dofNameCorridorArea                          to "DofCorridorArea">>
     <<set $dofNameRandomGeneratorSlot                   to "DofRandSlot">>
     <<set $dofNameChestItemSlot                         to "DofChestItemSlot">>
     <<set $dofNameAltChestItemSlot                      to "DofAltChestItemSlot">>
+    <<set $dofNameTrapItemSlot                          to "DofTrapItemSlot">>
+    <<set $dofNameDoorItemSlot                          to "DofDoorItemSlot">>
 ===
-
 
 title: DofFunctionInitImagePaths
 ---
@@ -55,6 +67,8 @@ title: DofFunctionInitImagePaths
     <<set $dofImageDefense                              to "img/dof/game-icons/bordered-shield.png">>
 
     // inline stats
+    <<set $dofImageInlineCoin                           to "[img]img/dof/assets/dungeon-tileset/UI/Icon-coin.png[/img]">>
+    <<set $dofImageInlineHP                             to "[img]{$dofImageConstitution}[/img]">>
     <<set $dofImageInlineConstitution                   to "[img]{$dofImageConstitution}[/img]">>
     <<set $dofImageInlineListen                         to "[img]{$dofImageListen}[/img]">>
     <<set $dofImageInlinePerception                     to "[img]{$dofImagePerception}[/img]">>
@@ -63,7 +77,11 @@ title: DofFunctionInitImagePaths
     <<set $dofImageInlineAttack                         to "[img]{$dofImageAttack}[/img]">>
     <<set $dofImageInlineDefense                        to "[img]{$dofImageDefense}[/img]">>
 
-    // levelup
+    // secondary stats
+    <<set $dofImageHP                                   to "img/dof/game-icons/hearts.png">>
+    <<set $dofImageCoin                                 to "img/dof/assets/dungeon-tileset/UI/Icon-coin-200.png">>
+
+    // level up
     <<set $dofImageStatsLevelUp                         to "{$dofImageConstitution}">> // TODO other stats image
     <<set $dofImageFobiaLevelUp                         to "{$dofImagePerception}">> // TODO other fobia image
 
@@ -109,6 +127,8 @@ title: DofFunctionInitImagePaths
     // map other
     <<set $dofImageExit                                 to "img/dof/assets/Isometric dungeon tiles 2d by RgsDev/Isometric tiles/Ladder 1 Left.png">>
     <<set $dofImageChest                                to "img/dof/assets/Isometric dungeon tiles 2d by RgsDev/Isometric tiles/Chest Left Opened.png">>
+    <<set $dofImageChestClosed                          to "img/dof/assets/Isometric dungeon tiles 2d by RgsDev/Isometric tiles/Chest Left.png">>
+    <<set $dofImageChestSmashed                         to "img/dof/assets/Isometric dungeon tiles 2d by RgsDev/Isometric tiles/Treasure.png">>
     <<set $dofImageAltar                                to "img/dof/assets/Isometric dungeon tiles 2d by RgsDev/Isometric tiles/Pilar.png">>
     <<set $dofImageTrader                               to "img/dof/assets/dungeon-tileset/NPC/Char1.png">>
     <<set $dofImageEvent                                to "img/dof/assets/dungeon-tileset/NPC/Skull.png">>
@@ -118,6 +138,8 @@ title: DofFunctionInitImagePaths
     <<set $dofImageEnemy3                               to "img/dof/assets/dungeon-tileset/NPC/NPC3.png">>
     <<set $dofImageEnemy4                               to "img/dof/assets/dungeon-tileset/NPC/NPC4.png">>
     <<set $dofImageEnemy5                               to "img/dof/assets/dungeon-tileset/NPC/NPC5.png">>
+    <<set $dofImageTrapArmed                            to "img/dof/assets/Isometric dungeon tiles 2d by RgsDev/Isometric tiles/Animated tiles/ShortSpikes 1.png">>
+    <<set $dofImageTrapWorked                           to "img/dof/assets/Isometric dungeon tiles 2d by RgsDev/Isometric tiles/Animated tiles/ShortSpikes 2.png">>
 
     // player
     <<set $dofImageCommonPlayer                         to "img/dof/game-player/Char1.png">>
@@ -128,24 +150,57 @@ title: DofFunctionInitImagePaths
     <<set $dofImageMenuArrowRight                       to "img/dof/game-menu/Arrow-right.png">>
     <<set $dofImageMenuArrowLeft                        to "img/dof/game-menu/Arrow-left.png">>
 
+    // unknown
+    <<set $dofImageUnknown                              to "img/dof/game-icons/yarn.png">>
+===
+
+/**
+ * @brief Initialize npc stats
+ * @param DofFunctionInitNewNpcStats_actor Actor name to update
+ * expected
+ *  dofStatMin
+ */
+title: DofFunctionInitNewNpcStats
+---
+    // initialize stats
+    <<set $_actor.$dofStatConstitution                to $_actor.$dofStatMin>>
+    <<set $_actor.$dofStatListen                      to $_actor.$dofStatMin>>
+    <<set $_actor.$dofStatPerception                  to $_actor.$dofStatMin>>
+    <<set $_actor.$dofStatSneak                       to $_actor.$dofStatMin>>
+    <<set $_actor.$dofStatSpeed                       to $_actor.$dofStatMin>>
+    <<set $_actor.$dofStatAttack                      to $_actor.$dofStatMin>>
+    <<set $_actor.$dofStatDefense                     to $_actor.$dofStatMin>>
+
+    // initialize stats visibility
+    <<set $_actor.$dofHideStatConstitution            to false>>
+    <<set $_actor.$dofHideStatListen                  to false>>
+    <<set $_actor.$dofHideStatPerception              to false>>
+    <<set $_actor.$dofHideStatSneak                   to false>>
+    <<set $_actor.$dofHideStatSpeed                   to false>>
+    <<set $_actor.$dofHideStatAttack                  to false>>
+    <<set $_actor.$dofHideStatDefense                 to false>>
+
+    <<set $_actor.$dofVisibilityRate                  to $dofStatsCount>>
 ===
 
 // Initialize player stats
 title: DofFunctionInitNewPlayerStats
 ---
     // stat limits
-    <<set $dofPlayer.dofStatMin                         to 1>> // max 5
-    <<set $dofPlayer.dofStatMax                         to 5>> // max 5
+    <<set $dofStatsCount                                to 7>> // number of stats
+    <<set $dofPlayer.dofStatMin                         to 1>> // min stat point
+    <<set $dofPlayer.dofStatMax                         to 5>> // max stat point
     <<set $dofPlayer.dofStatPointsLeft                  to 11>> // max (35/2)+1 -7 of initial = 11
 
+    <<set $dofNpc.dofStatPointsLeft                     to 10>> // starting npc points
+    <<set $dofNpc.dofStatDistancePerPointsLeft          to 5>> // distance to make npc stronger for 1 point
+
+    // hp
+    <<set $dofHPperConstitution                         to 20>> // with each constitution raise hp stat on this amount
+
     // initialize player stats
-    <<set $dofPlayer.dofStatConstitution                to $dofPlayer.dofStatMin>>
-    <<set $dofPlayer.dofStatListen                      to $dofPlayer.dofStatMin>>
-    <<set $dofPlayer.dofStatPerception                  to $dofPlayer.dofStatMin>>
-    <<set $dofPlayer.dofStatSneak                       to $dofPlayer.dofStatMin>>
-    <<set $dofPlayer.dofStatSpeed                       to $dofPlayer.dofStatMin>>
-    <<set $dofPlayer.dofStatAttack                      to $dofPlayer.dofStatMin>>
-    <<set $dofPlayer.dofStatDefense                     to $dofPlayer.dofStatMin>>
+    <<set $DofFunctionInitNewNpcStats_actor to "dofPlayer">>
+    <<hagCallNode name="DofFunctionInitNewNpcStats">>
 
     // initialize inventory size
     <<set $dofPlayer.dofInventorySize                   to 5>>
@@ -170,6 +225,9 @@ title: DofFunctionGameInit
 
     // initialize gold
     <<set $dofPlayer.dofGold to 0>>
+
+    // initialize secondary stats
+    <<set $dofPlayer.dofHP to 0>>
 
     // initialize inventory
     <<set $dofIndex to 0>>
@@ -235,12 +293,15 @@ title: DofFunctionGameInit
     <<set $dofRoomAreaMinId             to $dofRoomAreaLTId>>
     <<set $dofRoomAreaMaxId             to $dofRoomAreaRBId>>
 
-===
+    // initialize corridor areas type indexes, used for random corridor generation
+    <<set $dofCorridorAreaLMId          to 1>>
+    <<set $dofCorridorAreaLMMId         to 2>>
+    <<set $dofCorridorAreaRMMId         to 3>>
+    <<set $dofCorridorAreaRMId          to 4>>
 
-// Initialize function parameters to help variable detection
-// if function is not used, the variable discovery will not find it
-title: DofFunctionInitParams
----
+    <<set $dofCorridorAreaMinId         to $dofCorridorAreaLMId>>
+    <<set $dofCorridorAreaMaxId         to $dofCorridorAreaRMId>>
+
 ===
 
 // on start initialization
@@ -250,10 +311,23 @@ title: DofFunctionInitOnStart
     <<hagCallNode name="DofFunctionInitImagePaths">>
     <<hagCallNode name="DofFunctionInitSlotNames">>
     <<hagCallNode name="DofFunctionInitRoomConstants">>
+    <<hagCallNode name="DofFunctionInitCorridorConstants">>
+    <<hagCallNode name="DofFunctionInitItems">>
 
     // TODO language detection
 
     <<hagCallNode name="DofFunctionInitTranslations">>
 
+    // TODO init hints
+===
+
+// Initialize function parameters to help variable detection
+// if function is not used, the variable discovery will not find it
+title: DofFunctionInitParams
+---
+    <<set $DofFunctionAddNpcStats_actor to "">>
+    <<set $DofFunctionAddNpcSecondaryStats_actor to "">>
+    <<set $DofFunctionAddNpcSecondaryStatsShort_actor to "">>
+    <<set $DofFunctionDebugStats_actor to "">>
 ===
 

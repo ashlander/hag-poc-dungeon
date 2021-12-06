@@ -1,0 +1,80 @@
+/**
+ * @brief generates some amount of money
+ * @param DofFunctionGenerateContainerItemMoney_slot Container loot slot name
+ * @param DofFunctionGenerateContainerItemMoney_distance Room distance
+ */
+title: DofFunctionGenerateContainerItemMoney
+---
+    <<set $_slot.$dofType to $dofItemMoneyId>>
+    <<set $_count to random(1, $_distance)>>
+    <<set $_slot.$dofCount to $_count>>
+    <<set $_slot.$dofLink to "dofItemMoney">>
+    <<set $_slot.$dofFree to false>>
+===
+
+/**
+ * @brief Add container items
+ * @param DofFunctionAddContainerItems_slot Starting slot name of container
+ * @param DofFunctionAddContainerItems_max Max slot numbers
+ */
+title: DofFunctionAddContainerItems
+---
+    // fill generated items
+    <<set $_loot to 0>>
+    <<set $_continue to true>>
+    <<while $_continue and $_loot < $_max>>
+        <<if $_slot.$dofFree>>
+            <<hagHighlightBlockSet type=image>>
+            <<hagHighlightBlockNoteAdd path="{$dofImageInventoryEmptySlot}">>
+        <<else>>
+            <<set $_link to $_slot.$dofLink>> // get link item, containing detailed information
+            <<hagHighlightBlockSet type=image>>
+            <<if $_link is not "">>
+                <<hagHighlightBlockNoteAdd path="{$_link.$dofImage}" onclick="{$_slot}" >>
+            <<else>>
+                // this should not be happening
+                <<hagHighlightBlockNoteAdd path="{$dofImageUnknown}" onclick="{$_slot}" >>
+            <<endif>>
+        <<endif>>
+
+        <<if $_slot.$dofNext is not "">>
+            <<set $_slot to $_slot.$dofNext>> // iterate to next item
+        <<else>>
+            <<set $_continue to false>> // or finish
+        <<endif>>
+
+        <<set $_loot to $_loot+1>>
+    <<endwhile>>
+
+    // append empty slots
+    <<while $_loot < $_max>>
+        <<hagHighlightBlockSet type=image>>
+        <<hagHighlightBlockNoteAdd path="{$dofImageInventoryEmptySlot}">>
+        <<set $_loot to $_loot+1>>
+    <<endwhile>>
+===
+
+/**
+ * @brief Check container is empty
+ * @param DofFunctionCheckContainerEmpty_slot Starting slot name of container
+ * @return DofFunctionCheckContainerEmpty_empty If container is empty
+ */
+title: DofFunctionCheckContainerEmpty
+---
+    // fill generated items
+    <<set $_empty to true>>
+    <<set $_continue to true>>
+    <<while $_continue>>
+        <<if not $_slot.$dofFree>>
+            <<set $_empty to false>>
+            <<set $_continue to false>> // finish
+        <<endif>>
+
+        <<if $_slot.$dofNext is not "">>
+            <<set $_slot to $_slot.$dofNext>> // iterate to next item
+        <<else>>
+            <<set $_continue to false>> // or finish
+        <<endif>>
+    <<endwhile>>
+===
+
