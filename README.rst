@@ -93,6 +93,7 @@ Latest Gameplay
 + Languages support (en, uk)
 + Player character generation
 + Save / Load game (save files you should store on your computer/phone)
++ Small tutorial events
 + Rooms and Corridors generation
 + Character inventory (empty for now)
 + Chests with coins to loot
